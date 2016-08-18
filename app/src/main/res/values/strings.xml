@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">WeShare</string>
-    <string name="title_activity_user_profile">UserProfile</string>
+    <string name="title_activity_main">Requests</string>
+    <string name="title_activity_add_request">Add Requests</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_deep_link">DeepLinkActivity</string>
     <string name="title_activity_api">ApiActivity</string>

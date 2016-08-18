@@ -29,12 +29,13 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:label="@string/title_activity_user_profile"
+            android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
         <activity android:name=".RequestCreationActivity"
-            android:label="@string/title_activity_user_profile"
-            android:theme="@style/AppTheme.NoActionBar"  >
+            android:label="@string/title_activity_add_request"
+            android:theme="@style/AppTheme.NoActionBar"
+            >
         </activity>
     </application>
 

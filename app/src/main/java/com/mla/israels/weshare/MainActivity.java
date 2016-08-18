@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity
 
         try {
             User user = new User();
-            user.ID = -1;
+            user.Id = -1;
             user.Email = response.get("emailAddress").toString();
             user.Name = response.get("formattedName").toString();
             user.LinkdinUserProfileUrl = response.get("publicProfileUrl").toString();
@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public void failure(RetrofitError error) {
                     currentUser = null;
-                    Toast.makeText(getApplicationContext(), "Unable to save user. " + error.getCause(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Unable to save user. " + error.toString(), Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (Exception e){
@@ -223,16 +223,18 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_all_requests) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_my_requests) {
 
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_my_offers) {
 
         } else if (id == R.id.nav_share) {
-
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, "'WeSahre' is an awesome application");
+            sendIntent.setType("text/plain");
+            startActivity(sendIntent);
         } else if (id == R.id.nav_send) {
 
         }

@@ -14,10 +14,17 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.linkedin.platform.LISessionManager;
+import com.mla.israels.weshare.DataObjects.Request;
 import com.mla.israels.weshare.DataObjects.User;
 import com.mla.israels.weshare.communication.RestService;
 
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class RequestCreationActivity extends AppCompatActivity {
 
@@ -25,10 +32,10 @@ public class RequestCreationActivity extends AppCompatActivity {
     Spinner spnJobs;
     User currentUser;
     private String array_spinner[];
-    private int mYear, mMonth, mDay, mHour, mMinute;
-    EditText startDate;
-    EditText endDate;
-
+    EditText startDateTxt;
+    EditText endDateTxt;
+    Calendar startDate;
+    Calendar endDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,10 +47,33 @@ public class RequestCreationActivity extends AppCompatActivity {
             currentUser = (User)b.getSerializable("current_user");
 
         publish = (Button) findViewById(R.id.publish);
+        publish.setEnabled(false);
         publish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // RestService.getInstance().getRequestService().addRequest();
+                Calendar now = Calendar.getInstance();
+                Request req = new Request();
+                req.Title = ((EditText)findViewById(R.id.etxtTitle)).getText().toString();
+                req.Details = ((EditText)findViewById(R.id.etxtDetails)).getText().toString();
+                req.CreationDate = String.format("%1$04d-%2$02d-%3$02dT%4$02d:%5$02d:00",
+                        now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH),
+                        now.get(Calendar.HOUR), now.get(Calendar.MINUTE));
+                req.StartDate = "0001-01-01T00:00:00";//startDate.getTime().toString();
+                req.EndDate = "0001-01-01T00:00:00";//endDate.getTime().toString();
+                req.JobId = spnJobs.getSelectedItemPosition() + 1;
+                req.Location = ((EditText)findViewById(R.id.etxtLocation)).getText().toString();
+                req.UserId = currentUser.Id;
+                RestService.getInstance().getRequestService().addRequest(req, new Callback<Request>() {
+                    @Override
+                    public void success(Request user, Response response) {
+                        Toast.makeText(getApplicationContext(), "Request published", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Toast.makeText(getApplicationContext(), "Unable to publish your request. " + error.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
 
@@ -57,8 +87,8 @@ public class RequestCreationActivity extends AppCompatActivity {
                 android.R.layout.simple_spinner_item, array_spinner);
         spnJobs.setAdapter(adapter);
 
-        startDate = (EditText)findViewById(R.id.editStartDate);
-        endDate = (EditText)findViewById(R.id.editEndDate);
+        startDateTxt = (EditText)findViewById(R.id.editStartDate);
+        endDateTxt = (EditText)findViewById(R.id.editEndDate);
 
         Button btnStart = (Button)findViewById(R.id.btnStart);
         btnStart.setOnClickListener( new View.OnClickListener() {
@@ -66,10 +96,6 @@ public class RequestCreationActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Process to get Current Date
                 final Calendar c = Calendar.getInstance();
-                mYear = c.get(Calendar.YEAR);
-                mMonth = c.get(Calendar.MONTH);
-                mDay = c.get(Calendar.DAY_OF_MONTH);
-
                 // Launch Date Picker Dialog
                 DatePickerDialog dpd = new DatePickerDialog(RequestCreationActivity.this,
                         new DatePickerDialog.OnDateSetListener() {
@@ -78,24 +104,23 @@ public class RequestCreationActivity extends AppCompatActivity {
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
                                 // Display Selected date in textbox
-                                startDate.setText(dayOfMonth + "-"
+                                startDateTxt.setText(dayOfMonth + "-"
                                         + (monthOfYear + 1) + "-" + year);
-                                //Toast.makeText(getApplicationContext(), "jkjl", Toast.LENGTH_LONG);
+                                startDate =  new GregorianCalendar(year, monthOfYear, dayOfMonth);
+                                if (endDate != null)
+                                    publish.setEnabled(true);
                             }
-                        }, mYear, mMonth, mDay);
+                        }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
                 dpd.show();
             }
         });
 
-        Button btnEnd = (Button)findViewById(R.id.btnEnd);
+        final Button btnEnd = (Button)findViewById(R.id.btnEnd);
         btnEnd.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Process to get Current Date
                 final Calendar c = Calendar.getInstance();
-                mYear = c.get(Calendar.YEAR);
-                mMonth = c.get(Calendar.MONTH);
-                mDay = c.get(Calendar.DAY_OF_MONTH);
 
                 // Launch Date Picker Dialog
                 DatePickerDialog dpd = new DatePickerDialog(RequestCreationActivity.this,
@@ -105,11 +130,13 @@ public class RequestCreationActivity extends AppCompatActivity {
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
                                 // Display Selected date in textbox
-                                endDate.setText(dayOfMonth + "-"
+                                endDateTxt.setText(dayOfMonth + "-"
                                         + (monthOfYear + 1) + "-" + year);
-                                //Toast.makeText(getApplicationContext(), "jkjl", Toast.LENGTH_LONG);
+                                endDate =  new GregorianCalendar(year, monthOfYear, dayOfMonth);
+                                if (startDate != null)
+                                    publish.setEnabled(true);
                             }
-                        }, mYear, mMonth, mDay);
+                        }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
                 dpd.show();
             }
         });

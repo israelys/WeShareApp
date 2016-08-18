@@ -12,7 +12,7 @@ public class Request {
     public String Title;
     public String Details;
     public String Location;
-    public Date StartDate;
-    public Date EndDate;
-    public Date CreationDate;
+    public String StartDate;
+    public String EndDate;
+    public String CreationDate;
 }
