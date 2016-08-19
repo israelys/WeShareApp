@@ -1,6 +1,7 @@
 package com.mla.israels.weshare;
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ import retrofit.client.Response;
 
 public class RequestCreationActivity extends AppCompatActivity {
 
+    ProgressDialog progress;
     Button publish;
     Spinner spnJobs;
     User currentUser;
@@ -46,11 +48,16 @@ public class RequestCreationActivity extends AppCompatActivity {
         if (b != null)
             currentUser = (User)b.getSerializable("current_user");
 
+        progress= new ProgressDialog(this);
+        progress.setMessage("Publishing...");
+        progress.setCanceledOnTouchOutside(false);
+
         publish = (Button) findViewById(R.id.publish);
         publish.setEnabled(false);
         publish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progress.show();
                 Calendar now = Calendar.getInstance();
                 Request req = new Request();
                 req.Title = ((EditText)findViewById(R.id.etxtTitle)).getText().toString();
@@ -66,11 +73,14 @@ public class RequestCreationActivity extends AppCompatActivity {
                 RestService.getInstance().getRequestService().addRequest(req, new Callback<Request>() {
                     @Override
                     public void success(Request user, Response response) {
+                        progress.dismiss();
                         Toast.makeText(getApplicationContext(), "Request published", Toast.LENGTH_SHORT).show();
+                        finish();
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
+                        progress.dismiss();
                         Toast.makeText(getApplicationContext(), "Unable to publish your request. " + error.toString(), Toast.LENGTH_SHORT).show();
                     }
                 });

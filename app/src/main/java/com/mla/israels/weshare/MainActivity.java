@@ -46,7 +46,6 @@ public class MainActivity extends AppCompatActivity
     ImageView profile_pic;
     TextView user_name,user_email;
     NavigationView navigation_view;
-    Button logout;
     FloatingActionButton add_request_btn;
 
     @Override
@@ -54,7 +53,6 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        logout = (Button) findViewById(R.id.logout);
         setSupportActionBar(toolbar);
         progress= new ProgressDialog(this);
         progress.setMessage("Retrieve data...");
@@ -71,18 +69,6 @@ public class MainActivity extends AppCompatActivity
 
         setNavigationHeader();
         navigation_view.setNavigationItemSelectedListener(this);
-
-        // this is used for clear session i.e logout from linkedin
-
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LISessionManager.getInstance(getApplicationContext()).clearSession();
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
-            }
-        });
-
 
         add_request_btn = (FloatingActionButton)findViewById(R.id.add_request_btn);
         add_request_btn.setOnClickListener(new View.OnClickListener() {
@@ -211,6 +197,10 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        } else if (id == R.id.action_logout) {
+            LISessionManager.getInstance(getApplicationContext()).clearSession();
+            finish();
             return true;
         }
 

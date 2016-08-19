@@ -24,7 +24,7 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
                 app:popupTheme="@style/AppTheme.PopupOverlay" >
-                <Button
+                <!--<Button
                     android:id="@+id/logout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
                     android:text="Logout"
                     android:textSize="16dp"
                     android:layout_marginRight="15dp"
-                    />
+                    />-->
             </android.support.v7.widget.Toolbar>
 
         </android.support.design.widget.AppBarLayout>
