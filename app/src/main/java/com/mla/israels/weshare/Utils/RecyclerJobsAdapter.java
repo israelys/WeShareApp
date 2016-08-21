@@ -15,16 +15,17 @@ import com.mla.israels.weshare.DataObjects.Request;
 import com.mla.israels.weshare.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by david on 26/07/2016.
  */
 public class RecyclerJobsAdapter extends RecyclerView.Adapter<RecyclerJobsAdapter.RecyclerViewHolder>  implements View.OnClickListener{
     ArrayList<Integer> exPos = new ArrayList<>();
-    ArrayList<Request> arrayList;
+    List<Request> arrayList;
     Point point;
 
-    public RecyclerJobsAdapter(ArrayList<Request> arrayList)
+    public RecyclerJobsAdapter(List<Request> arrayList)
     {
         this.arrayList = arrayList;
     }
@@ -58,7 +59,7 @@ public class RecyclerJobsAdapter extends RecyclerView.Adapter<RecyclerJobsAdapte
             holder.imageView.setImageResource(R.drawable.arrow_right);
         }
 
-        Log.e("Debug onBind", position+ " position...");
+        Log.e("Debug onBind", position + " position...");
     }
 
     @Override
@@ -91,6 +92,10 @@ public class RecyclerJobsAdapter extends RecyclerView.Adapter<RecyclerJobsAdapte
     public void dismissJob(int position) {
         arrayList.remove(position);
         this.notifyItemRemoved(position);
+    }
+
+    public void refresh() {
+        this.notifyDataSetChanged();
     }
 
     public static class RecyclerViewHolder extends RecyclerView.ViewHolder

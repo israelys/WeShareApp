@@ -3,8 +3,12 @@ package com.mla.israels.weshare;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -27,9 +31,8 @@ import com.linkedin.platform.listeners.ApiListener;
 import com.linkedin.platform.listeners.ApiResponse;
 import com.mla.israels.weshare.DataObjects.Request;
 import com.mla.israels.weshare.DataObjects.User;
-import com.mla.israels.weshare.ExpendingListView.CustomArrayAdapter;
-import com.mla.israels.weshare.ExpendingListView.ExpandableListItem;
-import com.mla.israels.weshare.ExpendingListView.ExpandingListView;
+import com.mla.israels.weshare.Utils.RecyclerJobsAdapter;
+import com.mla.israels.weshare.Utils.SwipeHelper;
 import com.mla.israels.weshare.communication.RequestService;
 import com.mla.israels.weshare.communication.RestService;
 import com.squareup.picasso.Picasso;
@@ -59,6 +62,10 @@ public class MainActivity extends AppCompatActivity
     NavigationView navigation_view;
     FloatingActionButton add_request_btn;
 
+    RecyclerView recyclerView;
+    RecyclerJobsAdapter recyclerJobsAdapter;
+    ArrayList<Request> arrayList = new ArrayList<Request>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +80,13 @@ public class MainActivity extends AppCompatActivity
         progress.show();
 
         getUserData();
+
+        recyclerView = (RecyclerView)findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setHasFixedSize(true);
+        recyclerJobsAdapter = new RecyclerJobsAdapter(arrayList);
+        recyclerView.setAdapter(recyclerJobsAdapter);
+        new ItemTouchHelper(new SwipeHelper(recyclerJobsAdapter)).attachToRecyclerView(recyclerView);
         getRequests();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -96,24 +110,29 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+    public void StartRequestActivity(View view){
+        Intent i = new Intent(this, NewRequestActivity.class);
+        i.putExtra("ID", view.getTag().toString());
+        startActivity(i);
+    }
+
     private void getRequests() {
         RestService.getInstance().getRequestService().getRequest(new Callback<List<Request>>() {
             @Override
             public void success(List<Request> requests, Response response) {
-                List<ExpandableListItem> mData = new ArrayList<ExpandableListItem>();
+                arrayList.clear();
 
-                for (Request req:requests) {
-                    mData.add(new ExpandableListItem(req));
+                for (Request r : requests) {
+                    arrayList.add(r);
                 }
 
-                CustomArrayAdapter adapter = new CustomArrayAdapter(mThis, R.layout.list_view_item, mData);
-
-                Toast.makeText(getApplicationContext(), "User saved", Toast.LENGTH_SHORT).show();
+                recyclerJobsAdapter.refresh();
+                Toast.makeText(getApplicationContext(), "Success to get requests from server", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void failure(RetrofitError error) {
-                currentUser = null;
+
                 Toast.makeText(getApplicationContext(), "Unable to get requests from server. " + error.toString(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -252,7 +271,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_all_requests) {
-
+            getRequests();
         } else if (id == R.id.nav_my_requests) {
 
         } else if (id == R.id.nav_my_offers) {
