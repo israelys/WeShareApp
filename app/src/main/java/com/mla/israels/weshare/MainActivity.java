@@ -2,6 +2,7 @@ package com.mla.israels.weshare;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
@@ -24,11 +25,19 @@ import com.linkedin.platform.LISessionManager;
 import com.linkedin.platform.errors.LIApiError;
 import com.linkedin.platform.listeners.ApiListener;
 import com.linkedin.platform.listeners.ApiResponse;
+import com.mla.israels.weshare.DataObjects.Request;
 import com.mla.israels.weshare.DataObjects.User;
+import com.mla.israels.weshare.ExpendingListView.CustomArrayAdapter;
+import com.mla.israels.weshare.ExpendingListView.ExpandableListItem;
+import com.mla.israels.weshare.ExpendingListView.ExpandingListView;
+import com.mla.israels.weshare.communication.RequestService;
 import com.mla.israels.weshare.communication.RestService;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -42,6 +51,8 @@ public class MainActivity extends AppCompatActivity
     private static final String host = "api.linkedin.com";
     private static final String topCardUrl = "https://" + host + "/v1/people/~:" +
             "(email-address,formatted-name,phone-numbers,public-profile-url,picture-url,picture-urls::(original))";
+
+    MainActivity mThis;
     ProgressDialog progress;
     ImageView profile_pic;
     TextView user_name,user_email;
@@ -51,14 +62,18 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mThis = this;
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         progress= new ProgressDialog(this);
         progress.setMessage("Retrieve data...");
         progress.setCanceledOnTouchOutside(false);
         progress.show();
+
         getUserData();
+        getRequests();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -77,6 +92,29 @@ public class MainActivity extends AppCompatActivity
                 Intent i = new Intent(MainActivity.this, RequestCreationActivity.class);
                 i.putExtra("current_user", currentUser);
                 startActivity(i);
+            }
+        });
+    }
+
+    private void getRequests() {
+        RestService.getInstance().getRequestService().getRequest(new Callback<List<Request>>() {
+            @Override
+            public void success(List<Request> requests, Response response) {
+                List<ExpandableListItem> mData = new ArrayList<ExpandableListItem>();
+
+                for (Request req:requests) {
+                    mData.add(new ExpandableListItem(req));
+                }
+
+                CustomArrayAdapter adapter = new CustomArrayAdapter(mThis, R.layout.list_view_item, mData);
+
+                Toast.makeText(getApplicationContext(), "User saved", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                currentUser = null;
+                Toast.makeText(getApplicationContext(), "Unable to get requests from server. " + error.toString(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -214,7 +252,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_all_requests) {
-            // Handle the camera action
+
         } else if (id == R.id.nav_my_requests) {
 
         } else if (id == R.id.nav_my_offers) {
@@ -227,6 +265,9 @@ public class MainActivity extends AppCompatActivity
             startActivity(sendIntent);
         } else if (id == R.id.nav_send) {
 
+        } else if (id == R.id.nav_linkedin_prof) {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(currentUser.LinkdinUserProfileUrl));
+            startActivity(browserIntent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

@@ -3,6 +3,7 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/mla/israels/weshare/MainActivity.java" charset="windows-1255" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/drawable-v21" charset="windows-1255" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable-v21/border.9.png" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/button.png" charset="windows-1255" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/side_nav_bar.xml" charset="windows-1255" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/layout/app_bar_user_profile.xml" charset="windows-1255" />
