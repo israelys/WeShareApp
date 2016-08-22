@@ -8,14 +8,14 @@ import android.widget.TextView;
 /**
  * Created by david on 15/08/2016.
  */
-public class NewRequestActivity extends Activity {
+public class NewResponseActivity extends Activity {
     TextView responce_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.new_request);
+        setContentView(R.layout.new_response);
 
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -23,7 +23,7 @@ public class NewRequestActivity extends Activity {
         int height = dm.heightPixels;
         getWindow().setLayout((int) (width * .8), (int) (height * .8));
 
-        responce_id = (TextView) findViewById(R.id.responce_id);
+        responce_id = (TextView) findViewById(R.id.request_id);
         responce_id.setText(getIntent().getStringExtra("ID"));
     }
 }

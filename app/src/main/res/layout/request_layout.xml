@@ -25,6 +25,7 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:text="Hello World"
+                android:layout_toLeftOf="@+id/arrow"
                 />
 
             <TextView

@@ -3,7 +3,6 @@ package com.mla.israels.weshare;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,7 +18,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,7 +31,6 @@ import com.mla.israels.weshare.DataObjects.Request;
 import com.mla.israels.weshare.DataObjects.User;
 import com.mla.israels.weshare.Utils.RecyclerJobsAdapter;
 import com.mla.israels.weshare.Utils.SwipeHelper;
-import com.mla.israels.weshare.communication.RequestService;
 import com.mla.israels.weshare.communication.RestService;
 import com.squareup.picasso.Picasso;
 
@@ -79,6 +76,7 @@ public class MainActivity extends AppCompatActivity
         progress.setCanceledOnTouchOutside(false);
         progress.show();
 
+
         getUserData();
 
         recyclerView = (RecyclerView)findViewById(R.id.recycler_view);
@@ -87,7 +85,13 @@ public class MainActivity extends AppCompatActivity
         recyclerJobsAdapter = new RecyclerJobsAdapter(arrayList);
         recyclerView.setAdapter(recyclerJobsAdapter);
         new ItemTouchHelper(new SwipeHelper(recyclerJobsAdapter)).attachToRecyclerView(recyclerView);
-        getRequests();
+
+        Request request = new Request();
+        request.Title= "כותרת";
+        request.Details = "תוכן של בקשה";
+        arrayList.add(request);
+
+        //getRequests();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -111,7 +115,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void StartRequestActivity(View view){
-        Intent i = new Intent(this, NewRequestActivity.class);
+        Intent i = new Intent(this, NewResponseActivity.class);
         i.putExtra("ID", view.getTag().toString());
         startActivity(i);
     }
@@ -125,6 +129,27 @@ public class MainActivity extends AppCompatActivity
                 for (Request r : requests) {
                     arrayList.add(r);
                 }
+
+                recyclerJobsAdapter.refresh();
+                Toast.makeText(getApplicationContext(), "Success to get requests from server", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                Toast.makeText(getApplicationContext(), "Unable to get requests from server. " + error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void getRequestsByID() {
+        RestService.getInstance().getRequestService().getRequestById(currentUser.Id ,new Callback<Request>() {
+            @Override
+            public void success(Request requests, Response response) {
+                arrayList.clear();
+
+                arrayList.add(requests);
+
 
                 recyclerJobsAdapter.refresh();
                 Toast.makeText(getApplicationContext(), "Success to get requests from server", Toast.LENGTH_SHORT).show();
@@ -273,7 +298,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_all_requests) {
             getRequests();
         } else if (id == R.id.nav_my_requests) {
-
+            getRequestsByID();
         } else if (id == R.id.nav_my_offers) {
 
         } else if (id == R.id.nav_share) {
