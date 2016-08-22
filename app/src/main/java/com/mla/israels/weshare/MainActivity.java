@@ -85,13 +85,7 @@ public class MainActivity extends AppCompatActivity
         recyclerJobsAdapter = new RecyclerJobsAdapter(arrayList);
         recyclerView.setAdapter(recyclerJobsAdapter);
         new ItemTouchHelper(new SwipeHelper(recyclerJobsAdapter)).attachToRecyclerView(recyclerView);
-
-        Request request = new Request();
-        request.Title= "כותרת";
-        request.Details = "תוכן של בקשה";
-        arrayList.add(request);
-
-        //getRequests();
+        getRequests();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
