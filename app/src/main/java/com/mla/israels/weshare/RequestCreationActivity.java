@@ -1,5 +1,6 @@
 package com.mla.israels.weshare;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -29,6 +30,7 @@ import retrofit.client.Response;
 
 public class RequestCreationActivity extends AppCompatActivity {
 
+    public static String s_result_code = "new_req";
     ProgressDialog progress;
     Button publish;
     Spinner spnJobs;
@@ -65,16 +67,24 @@ public class RequestCreationActivity extends AppCompatActivity {
                 req.CreationDate = String.format("%1$04d-%2$02d-%3$02dT%4$02d:%5$02d:00",
                         now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH),
                         now.get(Calendar.HOUR), now.get(Calendar.MINUTE));
-                req.StartDate = "0001-01-01T00:00:00";//startDate.getTime().toString();
-                req.EndDate = "0001-01-01T00:00:00";//endDate.getTime().toString();
+                req.StartDate = String.format("%1$04d-%2$02d-%3$02dT%4$02d:%5$02d:00",
+                        startDate.get(Calendar.YEAR), startDate.get(Calendar.MONTH), startDate.get(Calendar.DAY_OF_MONTH),
+                        startDate.get(Calendar.HOUR), startDate.get(Calendar.MINUTE));
+                req.EndDate = String.format("%1$04d-%2$02d-%3$02dT%4$02d:%5$02d:00",
+                        endDate.get(Calendar.YEAR), endDate.get(Calendar.MONTH), endDate.get(Calendar.DAY_OF_MONTH),
+                        endDate.get(Calendar.HOUR), endDate.get(Calendar.MINUTE));
                 req.JobId = spnJobs.getSelectedItemPosition() + 1;
                 req.Location = ((EditText)findViewById(R.id.etxtLocation)).getText().toString();
                 req.UserId = currentUser.Id;
                 RestService.getInstance().getRequestService().addRequest(req, new Callback<Request>() {
                     @Override
-                    public void success(Request user, Response response) {
+                    public void success(Request request, Response response) {
                         progress.dismiss();
                         Toast.makeText(getApplicationContext(), "Request published", Toast.LENGTH_SHORT).show();
+
+                        Intent resultIntent = new Intent();
+                        resultIntent.putExtra(s_result_code, request);
+                        setResult(Activity.RESULT_OK, resultIntent);
                         finish();
                     }
 

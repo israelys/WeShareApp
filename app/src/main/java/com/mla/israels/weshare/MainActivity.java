@@ -1,5 +1,6 @@
 package com.mla.israels.weshare;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -37,6 +38,8 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 import retrofit.Callback;
@@ -103,9 +106,26 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 Intent i = new Intent(MainActivity.this, RequestCreationActivity.class);
                 i.putExtra("current_user", currentUser);
-                startActivity(i);
+                startActivityForResult(i, s_resultCode);
             }
         });
+    }
+
+    private final int s_resultCode = 77;
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode) {
+            case (s_resultCode) : {
+                if (resultCode == Activity.RESULT_OK) {
+                    Request newReq = (Request)data.getSerializableExtra(RequestCreationActivity.s_result_code);
+                    arrayList.add(0,newReq);
+                    recyclerJobsAdapter.refresh();
+                }
+                break;
+            }
+        }
     }
 
     public void StartRequestActivity(View view){
@@ -120,9 +140,11 @@ public class MainActivity extends AppCompatActivity
             public void success(List<Request> requests, Response response) {
                 arrayList.clear();
 
-                for (Request r : requests) {
-                    arrayList.add(r);
-                }
+                Request[] sortRequests = requests.toArray(new Request[requests.size()]);
+
+                Arrays.sort(sortRequests);
+
+                arrayList.addAll(Arrays.asList(sortRequests));
 
                 recyclerJobsAdapter.refresh();
                 Toast.makeText(getApplicationContext(), "Success to get requests from server", Toast.LENGTH_SHORT).show();
@@ -137,7 +159,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void getRequestsByID() {
-        RestService.getInstance().getRequestService().getRequestById(currentUser.Id ,new Callback<Request>() {
+        RestService.getInstance().getRequestService().getRequestById(currentUser.Id, new Callback<Request>() {
             @Override
             public void success(Request requests, Response response) {
                 arrayList.clear();
