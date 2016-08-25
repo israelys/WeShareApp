@@ -21,6 +21,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity
     private static final String topCardUrl = "https://" + host + "/v1/people/~:" +
             "(email-address,formatted-name,phone-numbers,public-profile-url,picture-url,picture-urls::(original))";
 
+    RelativeLayout back_dim_layout;
     MainActivity mThis;
     ProgressDialog progress;
     ImageView profile_pic;
@@ -74,7 +76,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         mThis = this;
         setContentView(R.layout.activity_main);
-
+        back_dim_layout = (RelativeLayout) findViewById(R.id.bac_dim_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         progress= new ProgressDialog(this);
@@ -198,7 +200,10 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+
+
     public void StartRequestActivity(View view){
+        //back_dim_layout.setVisibility(View.VISIBLE);
         Intent i = new Intent(this, NewResponseActivity.class);
         i.putExtra("REQUEST_ID", Integer.valueOf(view.getTag().toString()));
         i.putExtra("USER_ID", currentUser.Id);

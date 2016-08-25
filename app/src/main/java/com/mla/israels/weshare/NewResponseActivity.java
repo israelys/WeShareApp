@@ -60,6 +60,7 @@ public class NewResponseActivity extends Activity implements View.OnClickListene
                 Toast.makeText(getApplicationContext(), "failed... " + error.toString(), Toast.LENGTH_SHORT).show();
             }
         });
+        finish();
 
     }
 }
