@@ -10,5 +10,7 @@ public class Offer {
     public int RequestId;
     public int UserId;
     public String Comment;
-    public Boolean IsApproved;
+    public int IsApproved;
+    public User User;
+    public Request Request;
 }

@@ -9,4 +9,6 @@ public class User implements java.io.Serializable{
     public String Email;
     public String PictureUrl;
     public String LinkdinUserProfileUrl;
+    public Request[] Requests;
+    public Offer[] Offers;
 }

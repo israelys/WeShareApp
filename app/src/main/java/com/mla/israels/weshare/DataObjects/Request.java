@@ -16,6 +16,8 @@ public class Request implements Serializable, Comparable<Request> {
     public String StartDate;
     public String EndDate;
     public String CreationDate;
+    public User User;
+    public Offer[] Offers;
 
     @Override
     public int compareTo(Request another) {

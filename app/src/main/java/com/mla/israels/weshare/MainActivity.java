@@ -28,6 +28,7 @@ import com.linkedin.platform.LISessionManager;
 import com.linkedin.platform.errors.LIApiError;
 import com.linkedin.platform.listeners.ApiListener;
 import com.linkedin.platform.listeners.ApiResponse;
+import com.mla.israels.weshare.DataObjects.Offer;
 import com.mla.israels.weshare.DataObjects.Request;
 import com.mla.israels.weshare.DataObjects.User;
 import com.mla.israels.weshare.Utils.RecyclerJobsAdapter;
@@ -78,7 +79,6 @@ public class MainActivity extends AppCompatActivity
         progress.setMessage("Retrieve data...");
         progress.setCanceledOnTouchOutside(false);
         progress.show();
-
 
         getUserData();
 
@@ -159,16 +159,13 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void getRequestsByID() {
-        RestService.getInstance().getRequestService().getRequest(new Callback<List<Request>>() {
+        RestService.getInstance().getUserService().getUserById(currentUser.Id, new Callback<User>() {
             @Override
-            public void success(List<Request> requests, Response response) {
+            public void success(User user, Response response) {
                 arrayList.clear();
 
-                for (Request r : requests) {
-                    {
-                        if (r.UserId == currentUser.Id)
-                            arrayList.add(r);
-                    }
+                for (Request r : user.Requests){
+                    arrayList.add(r);
                 }
 
                 recyclerJobsAdapter.refresh();
