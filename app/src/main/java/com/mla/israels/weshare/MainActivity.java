@@ -130,7 +130,8 @@ public class MainActivity extends AppCompatActivity
 
     public void StartRequestActivity(View view){
         Intent i = new Intent(this, NewResponseActivity.class);
-        i.putExtra("ID", view.getTag().toString());
+        i.putExtra("REQUEST_ID", Integer.valueOf(view.getTag().toString()));
+        i.putExtra("USER_ID", currentUser.Id);
         startActivity(i);
     }
 
