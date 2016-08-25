@@ -159,13 +159,17 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void getRequestsByID() {
-        RestService.getInstance().getRequestService().getRequestById(currentUser.Id, new Callback<Request>() {
+        RestService.getInstance().getRequestService().getRequest(new Callback<List<Request>>() {
             @Override
-            public void success(Request requests, Response response) {
+            public void success(List<Request> requests, Response response) {
                 arrayList.clear();
 
-                arrayList.add(requests);
-
+                for (Request r : requests) {
+                    {
+                        if (r.UserId == currentUser.Id)
+                            arrayList.add(r);
+                    }
+                }
 
                 recyclerJobsAdapter.refresh();
                 Toast.makeText(getApplicationContext(), "Success to get requests from server", Toast.LENGTH_SHORT).show();
