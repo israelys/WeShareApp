@@ -13,6 +13,9 @@
     <string name="Kindergarden_Teacher">Kindergarden Teacher</string>
     <string name="Assistant">Assistant</string>
     <string name="category_lable">Category:</string>
+    <string name="btnSendText">Send</string>
+    <string name="add_your_comment">Add your comment:</string>
+    <string name="btn_offer_yourself">offer yourself</string>
     <string-array
         name="JobsArray">
         <item>@string/Lecturer</item>

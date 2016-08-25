@@ -9,4 +9,7 @@
     <string name="Kindergarden_Teacher">גננת</string>
     <string name="Assistant">סייעת</string>
     <string name="category_lable">קטגוריה:</string>
+    <string name="btnSendText">שלח</string>
+    <string name="add_your_comment">הוסף הערה:</string>
+    <string name="btn_offer_yourself">הגש הצעה</string>
 </resources>
