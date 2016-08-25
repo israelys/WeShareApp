@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity
     FloatingActionButton add_request_btn;
 
     RecyclerView recyclerView;
+    SwipeRefreshLayout swipeContainer;
     RecyclerJobsAdapter recyclerJobsAdapter;
     ArrayList<Request> arrayList = new ArrayList<Request>();
 
@@ -88,7 +90,7 @@ public class MainActivity extends AppCompatActivity
         recyclerJobsAdapter = new RecyclerJobsAdapter(this, arrayList);
         recyclerView.setAdapter(recyclerJobsAdapter);
         new ItemTouchHelper(new SwipeHelper(recyclerJobsAdapter)).attachToRecyclerView(recyclerView);
-        getRequests();
+        RefreshMainList(true, false);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -109,6 +111,74 @@ public class MainActivity extends AppCompatActivity
                 startActivityForResult(i, s_resultCode);
             }
         });
+
+        // Lookup the swipe container view
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                RefreshMainList(true, false);
+                // Now we call setRefreshing(false) to signal refresh has finished
+                swipeContainer.setRefreshing(false);
+            }
+        });
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+    }
+
+    private void RefreshMainList(boolean refreshAll, boolean refreshOnlyMy){
+        if (refreshAll){
+            RestService.getInstance().getRequestService().getRequest(new Callback<List<Request>>() {
+                @Override
+                public void success(List<Request> requests, Response response) {
+                    arrayList.clear();
+
+                    Request[] sortRequests = requests.toArray(new Request[requests.size()]);
+
+                    Arrays.sort(sortRequests);
+
+                    arrayList.addAll(Arrays.asList(sortRequests));
+
+                    recyclerJobsAdapter.refresh();
+                    Toast.makeText(getApplicationContext(), "Success to get requests from server", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+
+                    Toast.makeText(getApplicationContext(), "Unable to get requests from server. " + error.toString(), Toast.LENGTH_SHORT).show();
+                }
+            });
+            return;
+        }
+        if (refreshOnlyMy){
+            RestService.getInstance().getUserService().getUserById(currentUser.Id, new Callback<User>() {
+                @Override
+                public void success(User user, Response response) {
+                    arrayList.clear();
+
+                    for (Request r : user.Requests){
+                        arrayList.add(r);
+                    }
+
+                    recyclerJobsAdapter.refresh();
+                    Toast.makeText(getApplicationContext(), "Success to get requests from server", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+
+                    Toast.makeText(getApplicationContext(), "Unable to get requests from server. " + error.toString(), Toast.LENGTH_SHORT).show();
+                }
+            });
+            return;
+        }
+
     }
 
     private final int s_resultCode = 77;
@@ -133,52 +203,6 @@ public class MainActivity extends AppCompatActivity
         i.putExtra("REQUEST_ID", Integer.valueOf(view.getTag().toString()));
         i.putExtra("USER_ID", currentUser.Id);
         startActivity(i);
-    }
-
-    private void getRequests() {
-        RestService.getInstance().getRequestService().getRequest(new Callback<List<Request>>() {
-            @Override
-            public void success(List<Request> requests, Response response) {
-                arrayList.clear();
-
-                Request[] sortRequests = requests.toArray(new Request[requests.size()]);
-
-                Arrays.sort(sortRequests);
-
-                arrayList.addAll(Arrays.asList(sortRequests));
-
-                recyclerJobsAdapter.refresh();
-                Toast.makeText(getApplicationContext(), "Success to get requests from server", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-                Toast.makeText(getApplicationContext(), "Unable to get requests from server. " + error.toString(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void getRequestsByID() {
-        RestService.getInstance().getUserService().getUserById(currentUser.Id, new Callback<User>() {
-            @Override
-            public void success(User user, Response response) {
-                arrayList.clear();
-
-                for (Request r : user.Requests){
-                    arrayList.add(r);
-                }
-
-                recyclerJobsAdapter.refresh();
-                Toast.makeText(getApplicationContext(), "Success to get requests from server", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-                Toast.makeText(getApplicationContext(), "Unable to get requests from server. " + error.toString(), Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     /*Once User's can authenticated,
@@ -314,9 +338,9 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_all_requests) {
-            getRequests();
+            RefreshMainList(true, false);
         } else if (id == R.id.nav_my_requests) {
-            getRequestsByID();
+            RefreshMainList(false, true);
         } else if (id == R.id.nav_my_offers) {
 
         } else if (id == R.id.nav_share) {
