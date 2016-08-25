@@ -49,7 +49,7 @@ public class NewResponseActivity extends Activity implements View.OnClickListene
         offer.Comment = etComment.getText().toString();
         offer.RequestId = getIntent().getIntExtra("REQUEST_ID", -1);
         offer.UserId = getIntent().getIntExtra("USER_ID", -1);
-        RestService.getInstance().getOfferService().addOffer(new Offer(), new Callback<Offer>() {
+        RestService.getInstance().getOfferService().addOffer(offer, new Callback<Offer>() {
             @Override
             public void success(Offer offer, Response response) {
                 Toast.makeText(getApplicationContext(), "Success!...", Toast.LENGTH_SHORT).show();
