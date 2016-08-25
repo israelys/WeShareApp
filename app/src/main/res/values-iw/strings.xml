@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WeShare</string>
+    <string name="action_logout">התנתק</string>
+    <string name="action_settings">הגדרות</string>
+    <string name="title_activity_main">דרוש</string>
+    <string name="Lecturer">מרצה</string>
+    <string name="Teacher">מורה</string>
+    <string name="Kindergarden_Teacher">גננת</string>
+    <string name="Assistant">סייעת</string>
+    <string name="category_lable">קטגוריה:</string>
+</resources>

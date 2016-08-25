@@ -6,7 +6,18 @@
     <string name="action_logout">Logout</string>
     <string name="title_activity_deep_link">DeepLinkActivity</string>
     <string name="title_activity_api">ApiActivity</string>
-
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="Lecturer">Lecturer</string>
+    <string name="Teacher">Teacher</string>
+    <string name="Kindergarden_Teacher">Kindergarden Teacher</string>
+    <string name="Assistant">Assistant</string>
+    <string name="category_lable">Category:</string>
+    <string-array
+        name="JobsArray">
+        <item>@string/Lecturer</item>
+        <item>@string/Teacher</item>
+        <item>@string/Kindergarden_Teacher</item>
+        <item>@string/Assistant</item>
+    </string-array>
 </resources>

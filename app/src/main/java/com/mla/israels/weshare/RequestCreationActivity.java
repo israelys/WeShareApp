@@ -20,6 +20,9 @@ import com.mla.israels.weshare.DataObjects.Request;
 import com.mla.israels.weshare.DataObjects.User;
 import com.mla.israels.weshare.communication.RestService;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -50,6 +53,8 @@ public class RequestCreationActivity extends AppCompatActivity {
         if (b != null)
             currentUser = (User)b.getSerializable("current_user");
 
+        array_spinner = getResources().getStringArray(R.array.JobsArray);
+
         progress= new ProgressDialog(this);
         progress.setMessage("Publishing...");
         progress.setCanceledOnTouchOutside(false);
@@ -73,7 +78,8 @@ public class RequestCreationActivity extends AppCompatActivity {
                 req.EndDate = String.format("%1$04d-%2$02d-%3$02dT%4$02d:%5$02d:00",
                         endDate.get(Calendar.YEAR), endDate.get(Calendar.MONTH), endDate.get(Calendar.DAY_OF_MONTH),
                         endDate.get(Calendar.HOUR), endDate.get(Calendar.MINUTE));
-                req.JobId = spnJobs.getSelectedItemPosition() + 1;
+                //req.JobId = spnJobs.getSelectedItemPosition() + 1;
+                req.JobId = Arrays.asList(array_spinner).indexOf(spnJobs.getSelectedItem()) + 1;
                 req.Location = ((EditText)findViewById(R.id.etxtLocation)).getText().toString();
                 req.UserId = currentUser.Id;
                 RestService.getInstance().getRequestService().addRequest(req, new Callback<Request>() {
@@ -97,11 +103,12 @@ public class RequestCreationActivity extends AppCompatActivity {
             }
         });
 
-        array_spinner=new String[4];
+        /*array_spinner=new String[4];
         array_spinner[0]="Lecturer";
         array_spinner[1]="Teacher";
         array_spinner[2]="Kindergarden Teacher";
-        array_spinner[3]="Assistant (Garden)";
+        array_spinner[3]="Assistant (Garden)";*/
+
         spnJobs = (Spinner)findViewById(R.id.spinnerJobs);
         ArrayAdapter adapter = new ArrayAdapter(this,
                 android.R.layout.simple_spinner_item, array_spinner);

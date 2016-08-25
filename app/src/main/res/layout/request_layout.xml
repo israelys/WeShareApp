@@ -56,15 +56,36 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/flexible_area"
-            android:visibility="gone"
+            android:visibility="visible"
             android:orientation="vertical">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/full_job_summary"
-                android:padding="4dp"/>
-
+                android:padding="4dp"
+                android:text="A preschool teacher is a type of early childhood educator who instructs children from 2 to age 4 , which stands as the youngest stretch of early childhood education. Early Childhood Education teachers need to span the continuum of children from birth to age 8. \nPreschool teachers are encouraged to hold credentials in Early Childhood Education in the form of a Child Development Accreditation (CDA) or formal college education in Early Childhood or a related subject."/>
+            <LinearLayout
+                android:padding="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/category_lable"
+                    android:id="@+id/categor_lable" />
+                <TextView
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Category"
+                    android:id="@+id/category"
+                    android:textStyle="bold"/>
+            </LinearLayout>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

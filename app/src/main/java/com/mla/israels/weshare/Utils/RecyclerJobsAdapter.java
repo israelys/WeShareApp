@@ -1,5 +1,6 @@
 package com.mla.israels.weshare.Utils;
 
+import android.content.Context;
 import android.graphics.Point;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -24,9 +25,12 @@ public class RecyclerJobsAdapter extends RecyclerView.Adapter<RecyclerJobsAdapte
     ArrayList<Integer> exPos = new ArrayList<>();
     List<Request> arrayList;
     Point point;
+    private Context context;
 
-    public RecyclerJobsAdapter(List<Request> arrayList)
+
+    public RecyclerJobsAdapter(Context current, List<Request> arrayList)
     {
+        this.context = current;
         this.arrayList = arrayList;
     }
 
@@ -47,6 +51,7 @@ public class RecyclerJobsAdapter extends RecyclerView.Adapter<RecyclerJobsAdapte
         holder.FullSummery.setText(request.Details);
         holder.Id = request.Id;
         holder.btnNewRequest.setTag(request.Id);
+        holder.Category.setText(context.getResources().getStringArray(R.array.JobsArray)[request.JobId -1]);
         if (exPos.contains(position)){
             holder.FullDetails.setVisibility(View.VISIBLE);
             holder.Summery.setVisibility(View.GONE);
@@ -109,6 +114,7 @@ public class RecyclerJobsAdapter extends RecyclerView.Adapter<RecyclerJobsAdapte
         LinearLayout FullDetails;
         ImageView imageView;
         Button btnNewRequest;
+        public TextView Category;
 
         public RecyclerViewHolder(View view)
         {
@@ -119,6 +125,7 @@ public class RecyclerJobsAdapter extends RecyclerView.Adapter<RecyclerJobsAdapte
             FullDetails = (LinearLayout)view.findViewById(R.id.flexible_area);
             imageView = (ImageView)view.findViewById(R.id.arrow);
             btnNewRequest = (Button) view.findViewById(R.id.btn_sned_request);
+            Category = (TextView) view.findViewById(R.id.category);
         }
     }
 }

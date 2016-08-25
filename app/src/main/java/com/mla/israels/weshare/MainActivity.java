@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity
         recyclerView = (RecyclerView)findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
-        recyclerJobsAdapter = new RecyclerJobsAdapter(arrayList);
+        recyclerJobsAdapter = new RecyclerJobsAdapter(this, arrayList);
         recyclerView.setAdapter(recyclerJobsAdapter);
         new ItemTouchHelper(new SwipeHelper(recyclerJobsAdapter)).attachToRecyclerView(recyclerView);
         getRequests();
