@@ -12,4 +12,5 @@
     <string name="btnSendText">שלח</string>
     <string name="add_your_comment">הוסף הערה:</string>
     <string name="btn_offer_yourself">הגש הצעה</string>
+    <string name="btn_delete_request">מחק בקשה</string>
 </resources>

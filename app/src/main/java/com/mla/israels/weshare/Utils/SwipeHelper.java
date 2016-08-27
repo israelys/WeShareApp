@@ -8,13 +8,13 @@ import android.support.v7.widget.helper.ItemTouchHelper;
  */
 public class SwipeHelper extends ItemTouchHelper.SimpleCallback {
 
-    RecyclerJobsAdapter adapter;
+    RecyclerAllRequestsAdapter adapter;
 
     public SwipeHelper(int dragDirs, int swipeDirs) {
         super(dragDirs, swipeDirs);
     }
 
-    public SwipeHelper(RecyclerJobsAdapter adapter) {
+    public SwipeHelper(RecyclerAllRequestsAdapter adapter) {
         super(ItemTouchHelper.ANIMATION_TYPE_SWIPE_CANCEL, ItemTouchHelper.LEFT);
         this.adapter = adapter;
     }

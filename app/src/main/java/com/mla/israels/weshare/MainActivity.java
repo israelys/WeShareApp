@@ -9,7 +9,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -33,8 +32,8 @@ import com.linkedin.platform.listeners.ApiResponse;
 import com.mla.israels.weshare.DataObjects.Offer;
 import com.mla.israels.weshare.DataObjects.Request;
 import com.mla.israels.weshare.DataObjects.User;
-import com.mla.israels.weshare.Utils.RecyclerJobsAdapter;
-import com.mla.israels.weshare.Utils.SwipeHelper;
+import com.mla.israels.weshare.Utils.RecyclerAllRequestsAdapter;
+import com.mla.israels.weshare.Utils.RecyclerUserRequeatsAdapter;
 import com.mla.israels.weshare.communication.RestService;
 import com.squareup.picasso.Picasso;
 
@@ -42,7 +41,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 
 import retrofit.Callback;
@@ -53,7 +51,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     protected User currentUser;
-
+    private Request[] AllRequests;
     private static final String host = "api.linkedin.com";
     private static final String topCardUrl = "https://" + host + "/v1/people/~:" +
             "(email-address,formatted-name,phone-numbers,public-profile-url,picture-url,picture-urls::(original))";
@@ -68,8 +66,11 @@ public class MainActivity extends AppCompatActivity
 
     RecyclerView recyclerView;
     SwipeRefreshLayout swipeContainer;
-    RecyclerJobsAdapter recyclerJobsAdapter;
-    ArrayList<Request> arrayList = new ArrayList<Request>();
+    RecyclerAllRequestsAdapter recyclerAllRequestsAdapter;
+    ArrayList<Request> arrayListAllRequests = new ArrayList<Request>();
+
+    RecyclerUserRequeatsAdapter recyclerUserRequeatsAdapter;
+    ArrayList<Request> arrayListUserRequests = new ArrayList<Request>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,10 +90,11 @@ public class MainActivity extends AppCompatActivity
         recyclerView = (RecyclerView)findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
-        recyclerJobsAdapter = new RecyclerJobsAdapter(this, arrayList);
-        recyclerView.setAdapter(recyclerJobsAdapter);
-        new ItemTouchHelper(new SwipeHelper(recyclerJobsAdapter)).attachToRecyclerView(recyclerView);
-        RefreshMainList(true, false);
+        recyclerAllRequestsAdapter = new RecyclerAllRequestsAdapter(this, arrayListAllRequests);
+        recyclerUserRequeatsAdapter = new RecyclerUserRequeatsAdapter(this, arrayListUserRequests) ;
+        recyclerView.setAdapter(recyclerAllRequestsAdapter);
+        //new ItemTouchHelper(new SwipeHelper(recyclerAllRequestsAdapter)).attachToRecyclerView(recyclerView);
+        GetAllRequests();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -120,7 +122,7 @@ public class MainActivity extends AppCompatActivity
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                RefreshMainList(true, false);
+                GetAllRequests();
                 // Now we call setRefreshing(false) to signal refresh has finished
                 swipeContainer.setRefreshing(false);
             }
@@ -133,54 +135,83 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    private void RefreshMainList(boolean refreshAll, boolean refreshOnlyMy){
-        if (refreshAll){
-            RestService.getInstance().getRequestService().getRequest(new Callback<List<Request>>() {
-                @Override
-                public void success(List<Request> requests, Response response) {
-                    arrayList.clear();
+    private void GetAllRequests(){
+        recyclerView.setAdapter(recyclerAllRequestsAdapter);
+        RestService.getInstance().getRequestService().getRequest(new Callback<List<Request>>() {
+            @Override
+            public void success(List<Request> requests, Response response) {
+                arrayListAllRequests.clear();
 
-                    Request[] sortRequests = requests.toArray(new Request[requests.size()]);
+                Request[] sortRequests = requests.toArray(new Request[requests.size()]);
+                AllRequests = sortRequests;
+                Arrays.sort(sortRequests);
 
-                    Arrays.sort(sortRequests);
+                arrayListAllRequests.addAll(Arrays.asList(sortRequests));
 
-                    arrayList.addAll(Arrays.asList(sortRequests));
+                recyclerAllRequestsAdapter.refresh();
+                Toast.makeText(getApplicationContext(), "Success to get requests from server", Toast.LENGTH_SHORT).show();
+            }
 
-                    recyclerJobsAdapter.refresh();
-                    Toast.makeText(getApplicationContext(), "Success to get requests from server", Toast.LENGTH_SHORT).show();
+            @Override
+            public void failure(RetrofitError error) {
+
+                Toast.makeText(getApplicationContext(), "Unable to get requests from server. " + error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        return;
+    }
+    private void GetUserRequests(){
+        recyclerView.setAdapter(recyclerUserRequeatsAdapter);
+        RestService.getInstance().getUserService().getUserById(currentUser.Id, new Callback<User>() {
+            @Override
+            public void success(User user, Response response) {
+                arrayListUserRequests.clear();
+
+                for (Request r : user.Requests){
+                    arrayListUserRequests.add(r);
                 }
 
-                @Override
-                public void failure(RetrofitError error) {
+                recyclerUserRequeatsAdapter.refresh();
+                Toast.makeText(getApplicationContext(), "Success to get requests from server", Toast.LENGTH_SHORT).show();
+            }
 
-                    Toast.makeText(getApplicationContext(), "Unable to get requests from server. " + error.toString(), Toast.LENGTH_SHORT).show();
-                }
-            });
-            return;
-        }
-        if (refreshOnlyMy){
-            RestService.getInstance().getUserService().getUserById(currentUser.Id, new Callback<User>() {
-                @Override
-                public void success(User user, Response response) {
-                    arrayList.clear();
+            @Override
+            public void failure(RetrofitError error) {
 
-                    for (Request r : user.Requests){
-                        arrayList.add(r);
+                Toast.makeText(getApplicationContext(), "Unable to get requests from server. " + error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        return;
+    }
+
+    public void ShowMyOffers() {
+        recyclerView.setAdapter(recyclerUserRequeatsAdapter);
+
+        RestService.getInstance().getUserService().getUserById(currentUser.Id, new Callback<User>() {
+            @Override
+            public void success(User user, Response response) {
+                arrayListUserRequests.clear();
+
+                for (Offer offer : user.Offers) {
+                    for (Request request : AllRequests) {
+                        if (request.Id == offer.RequestId) {
+                            arrayListUserRequests.add(request);
+                            continue;
+                        }
                     }
-
-                    recyclerJobsAdapter.refresh();
-                    Toast.makeText(getApplicationContext(), "Success to get requests from server", Toast.LENGTH_SHORT).show();
                 }
 
-                @Override
-                public void failure(RetrofitError error) {
+                recyclerUserRequeatsAdapter.refresh();
+                Toast.makeText(getApplicationContext(), "Success to get requests from server", Toast.LENGTH_SHORT).show();
+            }
 
-                    Toast.makeText(getApplicationContext(), "Unable to get requests from server. " + error.toString(), Toast.LENGTH_SHORT).show();
-                }
-            });
-            return;
-        }
+            @Override
+            public void failure(RetrofitError error) {
 
+                Toast.makeText(getApplicationContext(), "Unable to get requests from server. " + error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        return;
     }
 
     private final int s_resultCode = 77;
@@ -192,8 +223,8 @@ public class MainActivity extends AppCompatActivity
             case (s_resultCode) : {
                 if (resultCode == Activity.RESULT_OK) {
                     Request newReq = (Request)data.getSerializableExtra(RequestCreationActivity.s_result_code);
-                    arrayList.add(0,newReq);
-                    recyclerJobsAdapter.refresh();
+                    arrayListAllRequests.add(0, newReq);
+                    recyclerAllRequestsAdapter.refresh();
                 }
                 break;
             }
@@ -343,11 +374,11 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_all_requests) {
-            RefreshMainList(true, false);
+            GetAllRequests();
         } else if (id == R.id.nav_my_requests) {
-            RefreshMainList(false, true);
+            GetUserRequests();
         } else if (id == R.id.nav_my_offers) {
-
+            ShowMyOffers();
         } else if (id == R.id.nav_share) {
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
@@ -364,5 +395,19 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void DeleteRequest(View view) {
+        RestService.getInstance().getRequestService().deleteRequestById((int) view.getTag(), new Callback<Request>() {
+            @Override
+            public void success(Request request, Response response) {
+                Toast.makeText(getApplicationContext(), "Success!...", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Toast.makeText(getApplicationContext(), "failed... " + error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

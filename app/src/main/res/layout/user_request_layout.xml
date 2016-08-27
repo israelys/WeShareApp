@@ -6,8 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
     card_view:cardCornerRadius="5dp"
-    card_view:cardElevation="5dp"
-    >
+    card_view:cardElevation="5dp">
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
         android:layout_width="match_parent" android:layout_height="wrap_content">
@@ -65,7 +64,7 @@
                 android:id="@+id/full_job_summary"
                 android:padding="4dp"
                 android:textSize="20sp"
-                android:text="A preschool teacher is a type of early childhood educator who instructs children from 2 to age 4 , which stands as the youngest stretch of early childhood education. Early Childhood Education teachers need to span the continuum of children from birth to age 8. \nPreschool teachers are encouraged to hold credentials in Early Childhood Education in the form of a Child Development Accreditation (CDA) or formal college education in Early Childhood or a related subject."/>
+                android:text="A preschool teacher is a type of early childhood educator who instructs children from 2 to age 4 , which stands as the youngest stretch of early childhood education. Early Childhood Education teachers need to span the continuum of children from birth to age 8."/>
             <LinearLayout
                 android:padding="5dp"
                 android:layout_width="match_parent"
@@ -87,12 +86,36 @@
                     android:id="@+id/category"
                     android:textStyle="bold"/>
             </LinearLayout>
-            <Button
+
+            <LinearLayout
+                android:id="@+id/btn_delete_request"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/btn_offer_yourself"
-                android:onClick="StartRequestActivity"
-                android:id="@+id/btn_sned_request"/>
+                android:background="@android:drawable/btn_default"
+                android:clickable="true"
+                android:orientation="horizontal"
+                android:onClick="DeleteRequest">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/delete" />
+
+                <TextView
+                    android:textSize="15sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/btn_delete_request" />
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/recycler_offers_view"
+                android:scrollbars="vertical">
+            </android.support.v7.widget.RecyclerView>
         </LinearLayout>
     </RelativeLayout>
 </android.support.v7.widget.CardView>
