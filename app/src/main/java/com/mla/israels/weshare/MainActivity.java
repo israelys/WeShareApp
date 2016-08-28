@@ -32,7 +32,9 @@ import com.linkedin.platform.listeners.ApiResponse;
 import com.mla.israels.weshare.DataObjects.Offer;
 import com.mla.israels.weshare.DataObjects.Request;
 import com.mla.israels.weshare.DataObjects.User;
+import com.mla.israels.weshare.Utils.ListType;
 import com.mla.israels.weshare.Utils.RecyclerAllRequestsAdapter;
+import com.mla.israels.weshare.Utils.RecyclerUserOffersAdapter;
 import com.mla.israels.weshare.Utils.RecyclerUserRequeatsAdapter;
 import com.mla.israels.weshare.communication.RestService;
 import com.squareup.picasso.Picasso;
@@ -50,7 +52,7 @@ import retrofit.client.Response;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    protected User currentUser;
+    public User currentUser;
     private Request[] AllRequests;
     private static final String host = "api.linkedin.com";
     private static final String topCardUrl = "https://" + host + "/v1/people/~:" +
@@ -72,6 +74,9 @@ public class MainActivity extends AppCompatActivity
     RecyclerUserRequeatsAdapter recyclerUserRequeatsAdapter;
     ArrayList<Request> arrayListUserRequests = new ArrayList<Request>();
 
+    RecyclerUserOffersAdapter recyclerUserOffersAdapter;
+    ArrayList<Request> arrayListUserOffersRequests = new ArrayList<Request>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +97,7 @@ public class MainActivity extends AppCompatActivity
         recyclerView.setHasFixedSize(true);
         recyclerAllRequestsAdapter = new RecyclerAllRequestsAdapter(this, arrayListAllRequests);
         recyclerUserRequeatsAdapter = new RecyclerUserRequeatsAdapter(this, arrayListUserRequests) ;
+        recyclerUserOffersAdapter = new RecyclerUserOffersAdapter(this, arrayListUserOffersRequests);
         recyclerView.setAdapter(recyclerAllRequestsAdapter);
         //new ItemTouchHelper(new SwipeHelper(recyclerAllRequestsAdapter)).attachToRecyclerView(recyclerView);
         GetAllRequests();
@@ -184,24 +190,24 @@ public class MainActivity extends AppCompatActivity
         return;
     }
 
-    public void ShowMyOffers() {
-        recyclerView.setAdapter(recyclerUserRequeatsAdapter);
+    public void GetUserOffers() {
+        recyclerView.setAdapter(recyclerUserOffersAdapter);
 
         RestService.getInstance().getUserService().getUserById(currentUser.Id, new Callback<User>() {
             @Override
             public void success(User user, Response response) {
-                arrayListUserRequests.clear();
+                arrayListUserOffersRequests.clear();
 
                 for (Offer offer : user.Offers) {
                     for (Request request : AllRequests) {
-                        if (request.Id == offer.RequestId) {
-                            arrayListUserRequests.add(request);
+                        if (request.Id == offer.RequestId && !arrayListUserOffersRequests.contains(request)) {
+                            arrayListUserOffersRequests.add(request);
                             continue;
                         }
                     }
                 }
 
-                recyclerUserRequeatsAdapter.refresh();
+                recyclerUserOffersAdapter.refresh();
                 Toast.makeText(getApplicationContext(), "Success to get requests from server", Toast.LENGTH_SHORT).show();
             }
 
@@ -378,7 +384,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_my_requests) {
             GetUserRequests();
         } else if (id == R.id.nav_my_offers) {
-            ShowMyOffers();
+            GetUserOffers();
         } else if (id == R.id.nav_share) {
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);

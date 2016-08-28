@@ -14,12 +14,10 @@ import android.widget.TextView;
 
 import com.mla.israels.weshare.DataObjects.Offer;
 import com.mla.israels.weshare.DataObjects.Request;
-import com.mla.israels.weshare.DataObjects.User;
 import com.mla.israels.weshare.MainActivity;
 import com.mla.israels.weshare.R;
 import com.mla.israels.weshare.communication.RestService;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,13 +29,13 @@ import retrofit.client.Response;
 /**
  * Created by david on 26/07/2016.
  */
-public class RecyclerUserRequeatsAdapter extends RecyclerView.Adapter<RecyclerUserRequeatsAdapter.RecyclerViewHolder>  implements View.OnClickListener{
+public class RecyclerUserOffersAdapter extends RecyclerView.Adapter<RecyclerUserOffersAdapter.RecyclerViewHolder>  implements View.OnClickListener{
     ArrayList<Integer> exPos = new ArrayList<>();
     List<Request> arrayList;
     Point point;
     private Context context;
 
-    public RecyclerUserRequeatsAdapter(Context current, List<Request> arrayList)
+    public RecyclerUserOffersAdapter(Context current, List<Request> arrayList)
     {
         this.context = current;
         this.arrayList = arrayList;
@@ -63,20 +61,12 @@ public class RecyclerUserRequeatsAdapter extends RecyclerView.Adapter<RecyclerUs
         holder.Category.setText(context.getResources().getStringArray(R.array.JobsArray)[request.JobId - 1]);
 
         // TODO:
-        if(request.Offers == null){
-            RestService.getInstance().getRequestService().getRequestById(request.Id, new Callback<Request>() {
-                @Override
-                public void success(Request newrequest, Response response) {
-                    if (newrequest.Offers != null)
-                        request.Offers = newrequest.Offers;
-                }
-
-                @Override
-                public void failure(RetrofitError error) {
-
-                }
-            });
+        ArrayList<Offer> offerList = new ArrayList<Offer>();
+        for (Offer offer:request.Offers) {
+            if (offer.UserId == ((MainActivity) context).currentUser.Id)
+                offerList.add(offer);
         }
+
         /*Offer offer = new Offer();
         User user = new User();
         user.Name = "Mame...";
@@ -85,7 +75,7 @@ public class RecyclerUserRequeatsAdapter extends RecyclerView.Adapter<RecyclerUs
         request.Offers = new Offer[1];
         request.Offers[0] = offer;*/
         if (request.Offers != null){
-            RecyclerOfferForRequeatsAdapter recycler = new RecyclerOfferForRequeatsAdapter(Arrays.asList(request.Offers));
+            RecyclerOfferForOffersAdapter recycler = new RecyclerOfferForOffersAdapter(offerList);
             holder.recyclerOffersView.setAdapter(recycler);
         }
 

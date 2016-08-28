@@ -15,19 +15,19 @@ import java.util.List;
 /**
  * Created by david on 26/07/2016.
  */
-public class RecyclerOfferForRequeatsAdapter extends RecyclerView.Adapter<RecyclerOfferForRequeatsAdapter.RecyclerViewHolder>{
+public class RecyclerOfferForOffersAdapter extends RecyclerView.Adapter<RecyclerOfferForOffersAdapter.RecyclerViewHolder>{
     List<Offer> arrayList;
     private Context context;
 
 
-    public RecyclerOfferForRequeatsAdapter(List<Offer> arrayList)
+    public RecyclerOfferForOffersAdapter(List<Offer> arrayList)
     {
         this.arrayList = arrayList;
     }
 
     @Override
     public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.offer_in_user_request_layout, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.offer_in_user_offers_layout, parent, false);
         RecyclerViewHolder recyclerViewHolder = new RecyclerViewHolder(view);
         return recyclerViewHolder;
     }
