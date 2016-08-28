@@ -32,7 +32,6 @@ import com.linkedin.platform.listeners.ApiResponse;
 import com.mla.israels.weshare.DataObjects.Offer;
 import com.mla.israels.weshare.DataObjects.Request;
 import com.mla.israels.weshare.DataObjects.User;
-import com.mla.israels.weshare.Utils.ListType;
 import com.mla.israels.weshare.Utils.RecyclerAllRequestsAdapter;
 import com.mla.israels.weshare.Utils.RecyclerUserOffersAdapter;
 import com.mla.israels.weshare.Utils.RecyclerUserRequeatsAdapter;
