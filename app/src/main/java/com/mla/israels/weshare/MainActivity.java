@@ -78,6 +78,8 @@ public class MainActivity extends AppCompatActivity
     RecyclerUserOffersAdapter recyclerUserOffersAdapter;
     ArrayList<Request> arrayListUserOffersRequests = new ArrayList<Request>();
 
+    int viewSelection = R.id.nav_all_requests;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -130,9 +132,16 @@ public class MainActivity extends AppCompatActivity
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                GetAllRequests();
-                // Now we call setRefreshing(false) to signal refresh has finished
-                swipeContainer.setRefreshing(false);
+                if (viewSelection == R.id.nav_all_requests) {
+                    ShowProgressBar();
+                    GetAllRequests();
+                } else if (viewSelection == R.id.nav_my_requests) {
+                    ShowProgressBar();
+                    GetUserRequests();
+                } else if (viewSelection == R.id.nav_my_offers) {
+                    ShowProgressBar();
+                    GetUserOffers();
+                }
             }
         });
         // Configure the refreshing colors
@@ -158,6 +167,7 @@ public class MainActivity extends AppCompatActivity
                 arrayListAllRequests.addAll(Arrays.asList(sortRequests));
 
                 recyclerAllRequestsAdapter.refresh();
+                swipeContainer.setRefreshing(false);
                 Toast.makeText(getApplicationContext(), "Success to get requests from server", Toast.LENGTH_SHORT).show();
             }
 
@@ -174,6 +184,7 @@ public class MainActivity extends AppCompatActivity
         RestService.getInstance().getUserService().getUserRequests(currentUser.Id, new Callback<User>() {
             @Override
             public void success(User user, Response response) {
+                progressBar.setVisibility(View.GONE);
                 arrayListUserRequests.clear();
 
                 for (Request r : user.Requests) {
@@ -181,6 +192,7 @@ public class MainActivity extends AppCompatActivity
                 }
 
                 recyclerUserRequeatsAdapter.refresh();
+                swipeContainer.setRefreshing(false);
                 Toast.makeText(getApplicationContext(), "Success to get requests from server", Toast.LENGTH_SHORT).show();
             }
 
@@ -199,6 +211,7 @@ public class MainActivity extends AppCompatActivity
         RestService.getInstance().getUserService().getUserOffers(currentUser.Id, new Callback<User>() {
             @Override
             public void success(User user, Response response) {
+                progressBar.setVisibility(View.GONE);
                 arrayListUserOffersRequests.clear();
 
                 for (Request request : user.Requests) {
@@ -206,6 +219,7 @@ public class MainActivity extends AppCompatActivity
                 }
 
                 recyclerUserOffersAdapter.refresh();
+                swipeContainer.setRefreshing(false);
                 Toast.makeText(getApplicationContext(), "Success to get requests from server", Toast.LENGTH_SHORT).show();
             }
 
@@ -384,12 +398,15 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_all_requests) {
             ShowProgressBar();
             GetAllRequests();
+            viewSelection = R.id.nav_all_requests;
         } else if (id == R.id.nav_my_requests) {
             ShowProgressBar();
             GetUserRequests();
+            viewSelection = R.id.nav_my_requests;
         } else if (id == R.id.nav_my_offers) {
             ShowProgressBar();
             GetUserOffers();
+            viewSelection = R.id.nav_my_offers;
         } else if (id == R.id.nav_share) {
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
