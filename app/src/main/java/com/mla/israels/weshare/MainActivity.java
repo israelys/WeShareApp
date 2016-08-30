@@ -20,6 +20,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,6 +52,7 @@ import retrofit.client.Response;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    ProgressBar progressBar;
     public User currentUser;
     private Request[] AllRequests;
     private static final String host = "api.linkedin.com";
@@ -88,6 +90,7 @@ public class MainActivity extends AppCompatActivity
         progress.setMessage("Retrieve data...");
         progress.setCanceledOnTouchOutside(false);
         progress.show();
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
 
         getUserData();
 
@@ -145,6 +148,7 @@ public class MainActivity extends AppCompatActivity
         RestService.getInstance().getRequestService().getRequest(new Callback<List<Request>>() {
             @Override
             public void success(List<Request> requests, Response response) {
+                progressBar.setVisibility(View.GONE);
                 arrayListAllRequests.clear();
 
                 Request[] sortRequests = requests.toArray(new Request[requests.size()]);
@@ -170,6 +174,7 @@ public class MainActivity extends AppCompatActivity
         RestService.getInstance().getUserService().getUserById(currentUser.Id, new Callback<User>() {
             @Override
             public void success(User user, Response response) {
+                progressBar.setVisibility(View.GONE);
                 arrayListUserRequests.clear();
 
                 for (Request r : user.Requests){
@@ -195,6 +200,7 @@ public class MainActivity extends AppCompatActivity
         RestService.getInstance().getUserService().getUserById(currentUser.Id, new Callback<User>() {
             @Override
             public void success(User user, Response response) {
+                progressBar.setVisibility(View.GONE);
                 arrayListUserOffersRequests.clear();
 
                 for (Offer offer : user.Offers) {
@@ -353,6 +359,10 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    private void ShowProgressBar(){
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -379,10 +389,13 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_all_requests) {
+            ShowProgressBar();
             GetAllRequests();
         } else if (id == R.id.nav_my_requests) {
+            ShowProgressBar();
             GetUserRequests();
         } else if (id == R.id.nav_my_offers) {
+            ShowProgressBar();
             GetUserOffers();
         } else if (id == R.id.nav_share) {
             Intent sendIntent = new Intent();
