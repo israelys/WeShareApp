@@ -171,13 +171,12 @@ public class MainActivity extends AppCompatActivity
     }
     private void GetUserRequests(){
         recyclerView.setAdapter(recyclerUserRequeatsAdapter);
-        RestService.getInstance().getUserService().getUserById(currentUser.Id, new Callback<User>() {
+        RestService.getInstance().getUserService().getUserRequests(currentUser.Id, new Callback<User>() {
             @Override
             public void success(User user, Response response) {
-                progressBar.setVisibility(View.GONE);
                 arrayListUserRequests.clear();
 
-                for (Request r : user.Requests){
+                for (Request r : user.Requests) {
                     arrayListUserRequests.add(r);
                 }
 
@@ -197,19 +196,13 @@ public class MainActivity extends AppCompatActivity
     public void GetUserOffers() {
         recyclerView.setAdapter(recyclerUserOffersAdapter);
 
-        RestService.getInstance().getUserService().getUserById(currentUser.Id, new Callback<User>() {
+        RestService.getInstance().getUserService().getUserOffers(currentUser.Id, new Callback<User>() {
             @Override
             public void success(User user, Response response) {
-                progressBar.setVisibility(View.GONE);
                 arrayListUserOffersRequests.clear();
 
-                for (Offer offer : user.Offers) {
-                    for (Request request : AllRequests) {
-                        if (request.Id == offer.RequestId && !arrayListUserOffersRequests.contains(request)) {
-                            arrayListUserOffersRequests.add(request);
-                            continue;
-                        }
-                    }
+                for (Request request : user.Requests) {
+                    arrayListUserOffersRequests.add(request);
                 }
 
                 recyclerUserOffersAdapter.refresh();

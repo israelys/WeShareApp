@@ -28,6 +28,12 @@ public interface UserService {
     @GET("/api/users/{id}")
     public void getUserById(@Path("id") Integer id,Callback<User> callback);
 
+    @GET("/api/users/getUserRequests/{id}")
+    public void getUserRequests(@Path("id") Integer id,Callback<User> callback);
+
+    @GET("/api/users/getUserOffers/{id}")
+    public void getUserOffers(@Path("id") Integer id,Callback<User> callback);
+
     //i.e. http://localhost/apiweshare/api/users/Users/1
     //Delete User record base on ID
     @DELETE("/api/users/{id}")
