@@ -3,7 +3,6 @@
     <string name="app_name">WeShare</string>
     <string name="action_logout">התנתק</string>
     <string name="action_settings">הגדרות</string>
-    <string name="title_activity_main">דרושים</string>
     <string name="Lecturer">מרצה</string>
     <string name="Teacher">מורה</string>
     <string name="Kindergarden_Teacher">גננת</string>
@@ -12,10 +11,16 @@
     <string name="btnSendText">שלח</string>
     <string name="add_your_comment">הוסף הערה:</string>
     <string name="btn_offer_yourself">הגש הצעה</string>
-    <string name="btn_delete_request">מחק בקשה</string>
-    <string name="btn_delete_offer">מחק הצעה</string>
+    <string name="btn_delete_request">הסר מודעה</string>
+    <string name="btn_delete_offer">בטל הצעה</string>
     <string name="your_offer_lable">ההצעה שלך:</string>
     <string name="btn_update_offer">עדכן הצעה</string>
     <string name="offer_added_successfuly">ההצעה נוספה בהצלחה!</string>
     <string name="offer_updated_successfuly">ההצעה עודכנה בהצלחה!</string>
+    <string name="request_deleted_successfuly">המודעה הוסרה בהצלחה!</string>
+    <string name="title_activity_all_requests">מודעות דרושים</string>
+    <string name="title_activity_user_requests">מודעות הדרושים שלי</string>
+    <string name="title_activity_offers">ההצעות שלי</string>
+    <string name="share">שתף</string>
+    <string name="Send">שלח</string>
 </resources>

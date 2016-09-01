@@ -1,6 +1,7 @@
 package com.mla.israels.weshare;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -23,11 +24,13 @@ import retrofit.client.Response;
 /**
  * Created by david on 15/08/2016.
  */
-public class NewResponseActivity extends Activity implements View.OnClickListener {
+public class EditOfferActivity extends Activity implements View.OnClickListener {
+
+    public static String s_result_code = "edited_offer";
     Button btnSendOffer;
     EditText etComment;
     int requestId;
-    Offer offer;
+    Request request;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +49,8 @@ public class NewResponseActivity extends Activity implements View.OnClickListene
 
         requestId = getIntent().getIntExtra("REQUEST_ID", -1);
         if (requestId == -1){
-            offer = (Offer) getIntent().getSerializableExtra("OFFER");
-            etComment.setText(offer.Comment);
+            request = (Request) getIntent().getSerializableExtra("REQUEST");
+            etComment.setText(request.Offers[0].Comment);
         }
     }
 
@@ -72,19 +75,23 @@ public class NewResponseActivity extends Activity implements View.OnClickListene
             finish();
         }
         else {
-            offer.Comment = etComment.getText().toString();
-            RestService.getInstance().getOfferService().updateOfferById(offer.Id, offer, new Callback<Offer>() {
+            request.Offers[0].Comment = etComment.getText().toString();
+            RestService.getInstance().getOfferService().updateOfferById(request.Offers[0].Id, request.Offers[0], new Callback<Offer>() {
                 @Override
                 public void success(Offer offer, Response response) {
                     Toast.makeText(getApplicationContext(), R.string.offer_updated_successfuly, Toast.LENGTH_SHORT).show();
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra(s_result_code, request);
+                    setResult(Activity.RESULT_OK, resultIntent);
+                    finish();
                 }
 
                 @Override
                 public void failure(RetrofitError error) {
                     Toast.makeText(getApplicationContext(), "failed... " + error.toString(), Toast.LENGTH_SHORT).show();
+                    finish();
                 }
             });
-            finish();
         }
     }
 }

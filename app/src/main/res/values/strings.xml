@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">WeShare</string>
-    <string name="title_activity_main">Requests</string>
     <string name="title_activity_add_request">Add Requests</string>
     <string name="action_settings">Settings</string>
     <string name="action_logout">Logout</string>
@@ -16,12 +15,13 @@
     <string name="btnSendText">Send</string>
     <string name="add_your_comment">Add your comment:</string>
     <string name="btn_offer_yourself">offer yourself</string>
-    <string name="btn_delete_request">Delete request</string>
+    <string name="btn_delete_request">Delete Want Ad</string>
     <string name="btn_delete_offer">Delete offer</string>
     <string name="your_offer_lable">your offer:</string>
     <string name="btn_update_offer">Update offer</string>
     <string name="offer_added_successfuly">offer added successfuly!</string>
     <string name="offer_updated_successfuly">offer updated successfuly!</string>
+    <string name="request_deleted_successfuly">Want Ad deleted successfuly!</string>
     <string-array
         name="JobsArray">
         <item>@string/Lecturer</item>
@@ -31,4 +31,9 @@
     </string-array>
     <item type="id" name="request" />
     <item type="id" name="position" />
+    <string name="title_activity_all_requests">Want Ads</string>
+    <string name="title_activity_user_requests">My Want Ads</string>
+    <string name="title_activity_offers">My offers</string>
+    <string name="share">Share</string>
+    <string name="Send">Send</string>
 </resources>

@@ -48,8 +48,9 @@ public class RecyclerUserOffersAdapter extends RecyclerView.Adapter<RecyclerUser
         holder.Summery.setText(request.Details);
         holder.FullSummery.setText(request.Details);
         holder.Id = request.Id;
-        holder.btnDeleteOffer.setTag(request.Offers[0].Id);
-        holder.btnUpdateOffer.setTag(request.Offers[0]);
+        holder.btnDeleteOffer.setTag(R.id.request, request);
+        holder.btnDeleteOffer.setTag(R.id.position, holder.getPosition());
+        holder.btnUpdateOffer.setTag(request);
         holder.Category.setText(context.getResources().getStringArray(R.array.JobsArray)[request.JobId - 1]);
         holder.Comment.setText(request.Offers[0].Comment);
 
@@ -102,6 +103,17 @@ public class RecyclerUserOffersAdapter extends RecyclerView.Adapter<RecyclerUser
 
     public void refresh() {
         this.notifyDataSetChanged();
+    }
+
+    public void closeFlexible(int pos){
+        exPos.remove(exPos.indexOf(pos));
+        for (int index = 0; index < exPos.size(); ++index)
+            if (exPos.get(index) > pos)
+                exPos.set(index, exPos.get(index) - 1);
+    }
+
+    public void collapseAllOffers(){
+        exPos.clear();
     }
 
     public static class RecyclerViewHolder extends RecyclerView.ViewHolder

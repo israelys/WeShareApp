@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 Intent i = new Intent(MainActivity.this, RequestCreationActivity.class);
                 i.putExtra("current_user", currentUser);
-                startActivityForResult(i, s_resultCode);
+                startActivityForResult(i, s_requestRequestCode);
             }
         });
 
@@ -154,6 +154,7 @@ public class MainActivity extends AppCompatActivity
 
     private void GetAllRequests(){
         recyclerView.setAdapter(recyclerAllRequestsAdapter);
+        recyclerAllRequestsAdapter.collapseAllRequests();
         RestService.getInstance().getRequestService().getRequest(new Callback<List<Request>>() {
             @Override
             public void success(List<Request> requests, Response response) {
@@ -181,6 +182,7 @@ public class MainActivity extends AppCompatActivity
     }
     private void GetUserRequests(){
         recyclerView.setAdapter(recyclerUserRequeatsAdapter);
+        recyclerUserRequeatsAdapter.collapseAllRequests();
         RestService.getInstance().getUserService().getUserRequests(currentUser.Id, new Callback<User>() {
             @Override
             public void success(User user, Response response) {
@@ -207,7 +209,7 @@ public class MainActivity extends AppCompatActivity
 
     public void GetUserOffers() {
         recyclerView.setAdapter(recyclerUserOffersAdapter);
-
+        recyclerUserOffersAdapter.collapseAllOffers();
         RestService.getInstance().getUserService().getUserOffers(currentUser.Id, new Callback<User>() {
             @Override
             public void success(User user, Response response) {
@@ -232,16 +234,18 @@ public class MainActivity extends AppCompatActivity
         return;
     }
 
-    private final int s_resultCode = 77;
+    private final int s_requestRequestCode = 77;
+    private final int s_offerRequestCode = 78;
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch(requestCode) {
-            case (s_resultCode) : {
+            case (s_requestRequestCode) : {
                 if (resultCode == Activity.RESULT_OK) {
                     Request newReq = (Request)data.getSerializableExtra(RequestCreationActivity.s_result_code);
                     arrayListAllRequests.add(0, newReq);
+                    recyclerAllRequestsAdapter.requestAdded();
                     arrayListUserRequests.add(newReq);
                     if (viewSelection == R.id.nav_all_requests){
                         recyclerAllRequestsAdapter.refresh();
@@ -251,12 +255,26 @@ public class MainActivity extends AppCompatActivity
                 }
                 break;
             }
+            case (s_offerRequestCode) : {
+                if (resultCode == Activity.RESULT_OK) {
+                    Request editedRequest = (Request)data.getSerializableExtra(EditOfferActivity.s_result_code);
+                    for (int index = 0; index < arrayListUserOffersRequests.size(); ++ index){
+                        Request request = arrayListUserOffersRequests.get(index);
+                        if (request.Id == editedRequest.Id){
+                            arrayListUserOffersRequests.set(index, editedRequest);
+                            recyclerUserOffersAdapter.refresh();
+                            break;
+                        }
+                    }
+                }
+                break;
+            }
         }
     }
 
     public void StartOffertActivity(View view){
         //back_dim_layout.setVisibility(View.VISIBLE);
-        Intent i = new Intent(this, NewResponseActivity.class);
+        Intent i = new Intent(this, EditOfferActivity.class);
         i.putExtra("REQUEST_ID", Integer.valueOf(view.getTag().toString()));
         i.putExtra("USER_ID", currentUser.Id);
         startActivity(i);
@@ -264,9 +282,9 @@ public class MainActivity extends AppCompatActivity
 
     public void UpdateOffer(View view){
         //back_dim_layout.setVisibility(View.VISIBLE);
-        Intent i = new Intent(this, NewResponseActivity.class);
-        i.putExtra("OFFER", (Offer)view.getTag());
-        startActivity(i);
+        Intent i = new Intent(this, EditOfferActivity.class);
+        i.putExtra("REQUEST", (Request) view.getTag());
+        startActivityForResult(i, s_offerRequestCode);
     }
     /*Once User's can authenticated,
       It make an HTTP GET request to LinkedIn's REST API using the currently authenticated user's credentials.
@@ -404,14 +422,17 @@ public class MainActivity extends AppCompatActivity
             ShowProgressBar();
             GetAllRequests();
             viewSelection = R.id.nav_all_requests;
+            setTitle(R.string.title_activity_all_requests);
         } else if (id == R.id.nav_my_requests) {
             ShowProgressBar();
             GetUserRequests();
             viewSelection = R.id.nav_my_requests;
+            setTitle(R.string.title_activity_user_requests);
         } else if (id == R.id.nav_my_offers) {
             ShowProgressBar();
             GetUserOffers();
             viewSelection = R.id.nav_my_offers;
+            setTitle(R.string.title_activity_offers);
         } else if (id == R.id.nav_share) {
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
@@ -436,7 +457,7 @@ public class MainActivity extends AppCompatActivity
         RestService.getInstance().getRequestService().deleteRequestById(requestToDelete.Id, new Callback<Request>() {
             @Override
             public void success(Request request, Response response) {
-                Toast.makeText(getApplicationContext(), "Success!...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), R.string.request_deleted_successfuly, Toast.LENGTH_SHORT).show();
                 if (viewSelection == R.id.nav_all_requests){
                     arrayListAllRequests.remove(requestToDelete);
                     recyclerAllRequestsAdapter.closeFlexible(pos);
@@ -456,10 +477,15 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void DeleteOffer(View view) {
-        RestService.getInstance().getOfferService().deleteOfferById((int) view.getTag(), new Callback<Offer>() {
+        final Request requestToDelete = (Request)view.getTag(R.id.request);
+        final int pos = (int) view.getTag(R.id.position);
+        RestService.getInstance().getOfferService().deleteOfferById(requestToDelete.Offers[0].Id, new Callback<Offer>() {
             @Override
             public void success(Offer offer, Response response) {
                 Toast.makeText(getApplicationContext(), "Success!...", Toast.LENGTH_SHORT).show();
+                arrayListUserOffersRequests.remove(requestToDelete);
+                recyclerUserOffersAdapter.closeFlexible(pos);
+                recyclerUserOffersAdapter.refresh();
             }
 
             @Override

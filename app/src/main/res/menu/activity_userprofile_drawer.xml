@@ -4,14 +4,14 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_all_requests"
-            android:title="All Requests"
+            android:title="@string/title_activity_all_requests"
             android:checked="true"/>
         <item
             android:id="@+id/nav_my_requests"
-            android:title="My Requests" />
+            android:title="@string/title_activity_user_requests" />
         <item
             android:id="@+id/nav_my_offers"
-            android:title="My Offers" />
+            android:title="@string/title_activity_offers" />
     </group>
 
     <item android:title="Communicate">
@@ -19,11 +19,11 @@
             <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
+                android:title="@string/share" />
             <item
                 android:id="@+id/nav_send"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+                android:title="@string/Send" />
             <item
                 android:id="@+id/nav_linkedin_prof"
                 android:icon="@drawable/linkedin_logo"

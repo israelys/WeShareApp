@@ -137,8 +137,14 @@ public class RecyclerUserRequeatsAdapter extends RecyclerView.Adapter<RecyclerUs
 
     public void closeFlexible(int pos){
         exPos.remove(exPos.indexOf(pos));
+        for (int index = 0; index < exPos.size(); ++index)
+            if (exPos.get(index) > pos)
+                exPos.set(index, exPos.get(index) - 1);
     }
 
+    public void collapseAllRequests(){
+        exPos.clear();
+    }
     public static class RecyclerViewHolder extends RecyclerView.ViewHolder
     {
         public static final String TITLE = "TITLE";
