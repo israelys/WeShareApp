@@ -13,4 +13,9 @@
     <string name="add_your_comment">הוסף הערה:</string>
     <string name="btn_offer_yourself">הגש הצעה</string>
     <string name="btn_delete_request">מחק בקשה</string>
+    <string name="btn_delete_offer">מחק הצעה</string>
+    <string name="your_offer_lable">ההצעה שלך:</string>
+    <string name="btn_update_offer">עדכן הצעה</string>
+    <string name="offer_added_successfuly">ההצעה נוספה בהצלחה!</string>
+    <string name="offer_updated_successfuly">ההצעה עודכנה בהצלחה!</string>
 </resources>

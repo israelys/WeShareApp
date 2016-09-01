@@ -6,8 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
     card_view:cardCornerRadius="5dp"
-    card_view:cardElevation="5dp"
-    >
+    card_view:cardElevation="5dp">
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
         android:layout_width="match_parent" android:layout_height="wrap_content">
@@ -87,33 +86,91 @@
                     android:id="@+id/category"
                     android:textStyle="bold"/>
             </LinearLayout>
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/btn_offer_yourself"
-                android:onClick="StartOffertActivity"
-                android:id="@+id/btn_add_offer"/>
-            <LinearLayout
-                android:id="@+id/btn_delete_request"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:drawable/btn_default"
-                android:clickable="true"
-                android:orientation="horizontal"
-                android:onClick="DeleteRequest">
 
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center_vertical"
-                    android:src="@drawable/delete" />
+            <TextView
+                android:textSize="20sp"
+                android:paddingTop="10dp"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/your_offer_lable"/>
 
+            <android.support.v7.widget.CardView
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                card_view:cardCornerRadius="5dp"
+                card_view:cardElevation="5dp">
                 <TextView
-                    android:textSize="15sp"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:text="@string/btn_delete_request" />
+                    android:id="@+id/offer_comment"
+                    android:text="Full offer comment"/>
+            </android.support.v7.widget.CardView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="3dp">
+
+                <LinearLayout
+                    android:gravity="center"
+                    android:id="@+id/btn_delete_offer"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/btn_default"
+                    android:clickable="true"
+                    android:orientation="horizontal"
+                    android:onClick="DeleteOffer">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/delete" />
+
+                    <TextView
+                        android:paddingRight="3dp"
+                        android:paddingLeft="5dp"
+                        android:textSize="15sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/btn_delete_offer" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:gravity="center"
+                    android:id="@+id/btn_update_offer"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/btn_default"
+                    android:clickable="true"
+                    android:orientation="horizontal"
+                    android:onClick="UpdateOffer">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/update" />
+
+                    <TextView
+                        android:paddingRight="5dp"
+                        android:paddingLeft="5dp"
+                        android:textSize="15sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/btn_update_offer" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </RelativeLayout>

@@ -17,6 +17,11 @@
     <string name="add_your_comment">Add your comment:</string>
     <string name="btn_offer_yourself">offer yourself</string>
     <string name="btn_delete_request">Delete request</string>
+    <string name="btn_delete_offer">Delete offer</string>
+    <string name="your_offer_lable">your offer:</string>
+    <string name="btn_update_offer">Update offer</string>
+    <string name="offer_added_successfuly">offer added successfuly!</string>
+    <string name="offer_updated_successfuly">offer updated successfuly!</string>
     <string-array
         name="JobsArray">
         <item>@string/Lecturer</item>
@@ -24,4 +29,6 @@
         <item>@string/Kindergarden_Teacher</item>
         <item>@string/Assistant</item>
     </string-array>
+    <item type="id" name="request" />
+    <item type="id" name="position" />
 </resources>

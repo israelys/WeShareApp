@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mla.israels.weshare.DataObjects.Request;
+import com.mla.israels.weshare.MainActivity;
 import com.mla.israels.weshare.R;
 
 import java.util.ArrayList;
@@ -50,8 +51,20 @@ public class RecyclerAllRequestsAdapter extends RecyclerView.Adapter<RecyclerAll
         holder.Summery.setText(request.Details);
         holder.FullSummery.setText(request.Details);
         holder.Id = request.Id;
-        holder.btnNewRequest.setTag(request.Id);
-        holder.Category.setText(context.getResources().getStringArray(R.array.JobsArray)[request.JobId -1]);
+
+        if (request.UserId == ((MainActivity)context).currentUser.Id) {
+            holder.btnDeleteRequest.setTag(R.id.request,request);
+            holder.btnDeleteRequest.setTag(R.id.position ,holder.getPosition());
+            holder.btnAddOffer.setVisibility(View.GONE);
+            holder.btnDeleteRequest.setVisibility(View.VISIBLE);
+        }
+        else {
+            holder.btnAddOffer.setTag(request.Id);
+            holder.btnAddOffer.setVisibility(View.VISIBLE);
+            holder.btnDeleteRequest.setVisibility(View.GONE);
+        }
+
+        holder.Category.setText(context.getResources().getStringArray(R.array.JobsArray)[request.JobId - 1]);
         if (exPos.contains(position)){
             holder.FullDetails.setVisibility(View.VISIBLE);
             holder.Summery.setVisibility(View.GONE);
@@ -103,6 +116,10 @@ public class RecyclerAllRequestsAdapter extends RecyclerView.Adapter<RecyclerAll
         this.notifyDataSetChanged();
     }
 
+    public void closeFlexible(int pos){
+        exPos.remove(exPos.indexOf(pos));
+    }
+
     public static class RecyclerViewHolder extends RecyclerView.ViewHolder
     {
         public static final String TITLE = "TITLE";
@@ -113,8 +130,9 @@ public class RecyclerAllRequestsAdapter extends RecyclerView.Adapter<RecyclerAll
         TextView Title, Summery, FullSummery;
         LinearLayout FullDetails;
         ImageView imageView;
-        Button btnNewRequest;
+        Button btnAddOffer;
         public TextView Category;
+        LinearLayout btnDeleteRequest;
 
         public RecyclerViewHolder(View view)
         {
@@ -124,7 +142,8 @@ public class RecyclerAllRequestsAdapter extends RecyclerView.Adapter<RecyclerAll
             FullSummery = (TextView)view.findViewById(R.id.full_job_summary);
             FullDetails = (LinearLayout)view.findViewById(R.id.flexible_area);
             imageView = (ImageView)view.findViewById(R.id.arrow);
-            btnNewRequest = (Button) view.findViewById(R.id.btn_sned_request);
+            btnAddOffer = (Button) view.findViewById(R.id.btn_add_offer);
+            btnDeleteRequest = (LinearLayout) view.findViewById(R.id.btn_delete_request);
             Category = (TextView) view.findViewById(R.id.category);
         }
     }

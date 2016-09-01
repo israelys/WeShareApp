@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity
         recyclerUserOffersAdapter = new RecyclerUserOffersAdapter(this, arrayListUserOffersRequests);
         recyclerView.setAdapter(recyclerAllRequestsAdapter);
         //new ItemTouchHelper(new SwipeHelper(recyclerAllRequestsAdapter)).attachToRecyclerView(recyclerView);
-        GetAllRequests();
+        //GetAllRequests();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -242,16 +242,19 @@ public class MainActivity extends AppCompatActivity
                 if (resultCode == Activity.RESULT_OK) {
                     Request newReq = (Request)data.getSerializableExtra(RequestCreationActivity.s_result_code);
                     arrayListAllRequests.add(0, newReq);
-                    recyclerAllRequestsAdapter.refresh();
+                    arrayListUserRequests.add(newReq);
+                    if (viewSelection == R.id.nav_all_requests){
+                        recyclerAllRequestsAdapter.refresh();
+                    }else if (viewSelection == R.id.nav_my_requests){
+                        recyclerUserRequeatsAdapter.refresh();
+                    }
                 }
                 break;
             }
         }
     }
 
-
-
-    public void StartRequestActivity(View view){
+    public void StartOffertActivity(View view){
         //back_dim_layout.setVisibility(View.VISIBLE);
         Intent i = new Intent(this, NewResponseActivity.class);
         i.putExtra("REQUEST_ID", Integer.valueOf(view.getTag().toString()));
@@ -259,6 +262,12 @@ public class MainActivity extends AppCompatActivity
         startActivity(i);
     }
 
+    public void UpdateOffer(View view){
+        //back_dim_layout.setVisibility(View.VISIBLE);
+        Intent i = new Intent(this, NewResponseActivity.class);
+        i.putExtra("OFFER", (Offer)view.getTag());
+        startActivity(i);
+    }
     /*Once User's can authenticated,
       It make an HTTP GET request to LinkedIn's REST API using the currently authenticated user's credentials.
       If successful, A LinkedIn ApiResponse object containing all of the relevant aspects of the server's response will be returned.
@@ -277,7 +286,6 @@ public class MainActivity extends AppCompatActivity
                 } catch (Exception e){
                     e.printStackTrace();
                 }
-
             }
 
             @Override
@@ -303,7 +311,7 @@ public class MainActivity extends AppCompatActivity
         user_email = (TextView) header.findViewById(R.id.email);
     }
 
-    public  void  saveUserProfile(JSONObject response){
+    public void saveUserProfile(JSONObject response){
 
         try {
             User user = new User();
@@ -317,6 +325,7 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public void success(User user, Response response) {
                     currentUser = user;
+                    GetAllRequests();
                     Toast.makeText(getApplicationContext(), "User saved", Toast.LENGTH_SHORT).show();
                 }
 
@@ -334,16 +343,12 @@ public class MainActivity extends AppCompatActivity
     /*
        Set User Profile Information in Navigation Bar.
      */
-    public  void  setUserProfile(JSONObject response){
-
+    public void setUserProfile(JSONObject response){
         try {
-
             user_email.setText(response.get("emailAddress").toString());
             user_name.setText(response.get("formattedName").toString());
-
             Picasso.with(this).load(response.getString("pictureUrl"))
                     .into(profile_pic);
-
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -426,9 +431,34 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void DeleteRequest(View view) {
-        RestService.getInstance().getRequestService().deleteRequestById((int) view.getTag(), new Callback<Request>() {
+        final Request requestToDelete = (Request)view.getTag(R.id.request);
+        final int pos = (int) view.getTag(R.id.position);
+        RestService.getInstance().getRequestService().deleteRequestById(requestToDelete.Id, new Callback<Request>() {
             @Override
             public void success(Request request, Response response) {
+                Toast.makeText(getApplicationContext(), "Success!...", Toast.LENGTH_SHORT).show();
+                if (viewSelection == R.id.nav_all_requests){
+                    arrayListAllRequests.remove(requestToDelete);
+                    recyclerAllRequestsAdapter.closeFlexible(pos);
+                    recyclerAllRequestsAdapter.refresh();
+                }else if (viewSelection == R.id.nav_my_requests){
+                    arrayListUserRequests.remove(requestToDelete);
+                    recyclerUserRequeatsAdapter.closeFlexible(pos);
+                    recyclerUserRequeatsAdapter.refresh();
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Toast.makeText(getApplicationContext(), "failed... " + error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void DeleteOffer(View view) {
+        RestService.getInstance().getOfferService().deleteOfferById((int) view.getTag(), new Callback<Offer>() {
+            @Override
+            public void success(Offer offer, Response response) {
                 Toast.makeText(getApplicationContext(), "Success!...", Toast.LENGTH_SHORT).show();
             }
 

@@ -59,7 +59,8 @@ public class RecyclerUserRequeatsAdapter extends RecyclerView.Adapter<RecyclerUs
         holder.Summery.setText(request.Details);
         holder.FullSummery.setText(request.Details);
         holder.Id = request.Id;
-        holder.btnDeleteRequest.setTag(request.Id);
+        holder.btnDeleteRequest.setTag(R.id.request, request);
+        holder.btnDeleteRequest.setTag(R.id.position ,holder.getPosition());
         holder.Category.setText(context.getResources().getStringArray(R.array.JobsArray)[request.JobId - 1]);
 
         // TODO:
@@ -77,13 +78,7 @@ public class RecyclerUserRequeatsAdapter extends RecyclerView.Adapter<RecyclerUs
                 }
             });
         }
-        /*Offer offer = new Offer();
-        User user = new User();
-        user.Name = "Mame...";
-        offer.User = user;
-        offer.Comment = "Comment...";
-        request.Offers = new Offer[1];
-        request.Offers[0] = offer;*/
+
         if (request.Offers != null){
             RecyclerOfferForRequeatsAdapter recycler = new RecyclerOfferForRequeatsAdapter(Arrays.asList(request.Offers));
             holder.recyclerOffersView.setAdapter(recycler);
@@ -138,6 +133,10 @@ public class RecyclerUserRequeatsAdapter extends RecyclerView.Adapter<RecyclerUs
 
     public void refresh() {
         this.notifyDataSetChanged();
+    }
+
+    public void closeFlexible(int pos){
+        exPos.remove(exPos.indexOf(pos));
     }
 
     public static class RecyclerViewHolder extends RecyclerView.ViewHolder

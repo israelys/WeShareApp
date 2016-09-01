@@ -2,7 +2,6 @@ package com.mla.israels.weshare.Utils;
 
 import android.content.Context;
 import android.graphics.Point;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,19 +11,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.mla.israels.weshare.DataObjects.Offer;
 import com.mla.israels.weshare.DataObjects.Request;
-import com.mla.israels.weshare.MainActivity;
 import com.mla.israels.weshare.R;
-import com.mla.israels.weshare.communication.RestService;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 /**
  * Created by david on 26/07/2016.
@@ -43,7 +34,7 @@ public class RecyclerUserOffersAdapter extends RecyclerView.Adapter<RecyclerUser
 
     @Override
     public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_request_layout, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_offer_layout, parent, false);
         RecyclerViewHolder recyclerViewHolder = new RecyclerViewHolder(view);
         recyclerViewHolder.itemView.setOnClickListener(this);
         recyclerViewHolder.itemView.setTag(recyclerViewHolder);
@@ -57,27 +48,10 @@ public class RecyclerUserOffersAdapter extends RecyclerView.Adapter<RecyclerUser
         holder.Summery.setText(request.Details);
         holder.FullSummery.setText(request.Details);
         holder.Id = request.Id;
-        holder.btnDeleteRequest.setTag(request.Id);
+        holder.btnDeleteOffer.setTag(request.Id);
+        holder.btnUpdateOffer.setTag(request.Offers[0]);
         holder.Category.setText(context.getResources().getStringArray(R.array.JobsArray)[request.JobId - 1]);
-
-        // TODO:
-        ArrayList<Offer> offerList = new ArrayList<Offer>();
-        for (Offer offer:request.Offers) {
-            if (offer.UserId == ((MainActivity) context).currentUser.Id)
-                offerList.add(offer);
-        }
-
-        /*Offer offer = new Offer();
-        User user = new User();
-        user.Name = "Mame...";
-        offer.User = user;
-        offer.Comment = "Comment...";
-        request.Offers = new Offer[1];
-        request.Offers[0] = offer;*/
-        if (request.Offers != null){
-            RecyclerOfferForOffersAdapter recycler = new RecyclerOfferForOffersAdapter(offerList);
-            holder.recyclerOffersView.setAdapter(recycler);
-        }
+        holder.Comment.setText(request.Offers[0].Comment);
 
         if (exPos.contains(position)){
             holder.FullDetails.setVisibility(View.VISIBLE);
@@ -137,12 +111,11 @@ public class RecyclerUserOffersAdapter extends RecyclerView.Adapter<RecyclerUser
         public static final String ID = "ID";
 
         int Id;
-        TextView Title, Summery, FullSummery;
+        TextView Title, Summery, FullSummery, Comment;
         LinearLayout FullDetails;
         ImageView imageView;
-        LinearLayout btnDeleteRequest;
+        LinearLayout btnDeleteOffer, btnUpdateOffer;
         public TextView Category;
-        RecyclerView recyclerOffersView;
 
         public RecyclerViewHolder(View view)
         {
@@ -152,14 +125,10 @@ public class RecyclerUserOffersAdapter extends RecyclerView.Adapter<RecyclerUser
             FullSummery = (TextView)view.findViewById(R.id.full_job_summary);
             FullDetails = (LinearLayout)view.findViewById(R.id.flexible_area);
             imageView = (ImageView)view.findViewById(R.id.arrow);
-            btnDeleteRequest = (LinearLayout) view.findViewById(R.id.btn_delete_request);
+            btnDeleteOffer = (LinearLayout) view.findViewById(R.id.btn_delete_offer);
+            btnUpdateOffer = (LinearLayout) view.findViewById(R.id.btn_update_offer);
             Category = (TextView) view.findViewById(R.id.category);
-
-            recyclerOffersView = (RecyclerView) view.findViewById(R.id.recycler_offers_view);
-            LinearLayoutManager llManager = new LinearLayoutManager(view.getContext());
-            llManager.setAutoMeasureEnabled(true);
-            recyclerOffersView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-
+            Comment = (TextView) view.findViewById(R.id.offer_comment);
         }
     }
 }
