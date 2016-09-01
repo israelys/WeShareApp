@@ -48,7 +48,7 @@ public class RecyclerUserOffersAdapter extends RecyclerView.Adapter<RecyclerUser
         holder.Summery.setText(request.Details);
         holder.FullSummery.setText(request.Details);
         holder.Id = request.Id;
-        holder.btnDeleteOffer.setTag(request.Id);
+        holder.btnDeleteOffer.setTag(request.Offers[0].Id);
         holder.btnUpdateOffer.setTag(request.Offers[0]);
         holder.Category.setText(context.getResources().getStringArray(R.array.JobsArray)[request.JobId - 1]);
         holder.Comment.setText(request.Offers[0].Comment);
