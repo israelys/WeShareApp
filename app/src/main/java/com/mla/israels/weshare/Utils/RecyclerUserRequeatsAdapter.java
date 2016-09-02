@@ -60,28 +60,17 @@ public class RecyclerUserRequeatsAdapter extends RecyclerView.Adapter<RecyclerUs
         holder.FullSummery.setText(request.Details);
         holder.Id = request.Id;
         holder.btnDeleteRequest.setTag(R.id.request, request);
-        holder.btnDeleteRequest.setTag(R.id.position ,holder.getPosition());
+        holder.btnDeleteRequest.setTag(R.id.position, holder.getPosition());
         holder.Category.setText(context.getResources().getStringArray(R.array.JobsArray)[request.JobId - 1]);
 
-        // TODO:
-        if(request.Offers == null){
-            RestService.getInstance().getRequestService().getRequestById(request.Id, new Callback<Request>() {
-                @Override
-                public void success(Request newrequest, Response response) {
-                    if (newrequest.Offers != null)
-                        request.Offers = newrequest.Offers;
-                }
-
-                @Override
-                public void failure(RetrofitError error) {
-
-                }
-            });
-        }
-
-        if (request.Offers != null){
+        if (request.Offers != null && request.Offers.length > 0){
+            holder.OffersTitle.setVisibility(View.VISIBLE);
             RecyclerOfferForRequeatsAdapter recycler = new RecyclerOfferForRequeatsAdapter(Arrays.asList(request.Offers));
             holder.recyclerOffersView.setAdapter(recycler);
+            holder.recyclerOffersView.setVisibility(View.VISIBLE);
+        }else {
+            holder.OffersTitle.setVisibility(View.GONE);
+            holder.recyclerOffersView.setVisibility(View.GONE);
         }
 
         if (exPos.contains(position)){
@@ -152,7 +141,7 @@ public class RecyclerUserRequeatsAdapter extends RecyclerView.Adapter<RecyclerUs
         public static final String ID = "ID";
 
         int Id;
-        TextView Title, Summery, FullSummery;
+        TextView Title, Summery, FullSummery, OffersTitle;
         LinearLayout FullDetails;
         ImageView imageView;
         LinearLayout btnDeleteRequest;
@@ -169,6 +158,7 @@ public class RecyclerUserRequeatsAdapter extends RecyclerView.Adapter<RecyclerUs
             imageView = (ImageView)view.findViewById(R.id.arrow);
             btnDeleteRequest = (LinearLayout) view.findViewById(R.id.btn_delete_request);
             Category = (TextView) view.findViewById(R.id.category);
+            OffersTitle = (TextView) view.findViewById(R.id.offers_title);
 
             recyclerOffersView = (RecyclerView) view.findViewById(R.id.recycler_offers_view);
             LinearLayoutManager llManager = new LinearLayoutManager(view.getContext());

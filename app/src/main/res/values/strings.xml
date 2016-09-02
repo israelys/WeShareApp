@@ -36,4 +36,7 @@
     <string name="title_activity_offers">My offers</string>
     <string name="share">Share</string>
     <string name="Send">Send</string>
+    <string name="offers">Offers:</string>
+    <string name="offering_name">Offering Name:</string>
+    <string name="email">E-mail:</string>
 </resources>

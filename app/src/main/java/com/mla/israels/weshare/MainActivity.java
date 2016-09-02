@@ -133,13 +133,10 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onRefresh() {
                 if (viewSelection == R.id.nav_all_requests) {
-                    ShowProgressBar();
                     GetAllRequests();
                 } else if (viewSelection == R.id.nav_my_requests) {
-                    ShowProgressBar();
                     GetUserRequests();
                 } else if (viewSelection == R.id.nav_my_offers) {
-                    ShowProgressBar();
                     GetUserOffers();
                 }
             }
@@ -153,6 +150,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void GetAllRequests(){
+        ShowProgressBar();
+        add_request_btn.setVisibility(View.VISIBLE);
         recyclerView.setAdapter(recyclerAllRequestsAdapter);
         recyclerAllRequestsAdapter.collapseAllRequests();
         RestService.getInstance().getRequestService().getRequest(new Callback<List<Request>>() {
@@ -181,6 +180,8 @@ public class MainActivity extends AppCompatActivity
         return;
     }
     private void GetUserRequests(){
+        ShowProgressBar();
+        add_request_btn.setVisibility(View.VISIBLE);
         recyclerView.setAdapter(recyclerUserRequeatsAdapter);
         recyclerUserRequeatsAdapter.collapseAllRequests();
         RestService.getInstance().getUserService().getUserRequests(currentUser.Id, new Callback<User>() {
@@ -208,6 +209,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void GetUserOffers() {
+        ShowProgressBar();
+        add_request_btn.setVisibility(View.GONE);
         recyclerView.setAdapter(recyclerUserOffersAdapter);
         recyclerUserOffersAdapter.collapseAllOffers();
         RestService.getInstance().getUserService().getUserOffers(currentUser.Id, new Callback<User>() {
@@ -419,17 +422,14 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_all_requests) {
-            ShowProgressBar();
             GetAllRequests();
             viewSelection = R.id.nav_all_requests;
             setTitle(R.string.title_activity_all_requests);
         } else if (id == R.id.nav_my_requests) {
-            ShowProgressBar();
             GetUserRequests();
             viewSelection = R.id.nav_my_requests;
             setTitle(R.string.title_activity_user_requests);
         } else if (id == R.id.nav_my_offers) {
-            ShowProgressBar();
             GetUserOffers();
             viewSelection = R.id.nav_my_offers;
             setTitle(R.string.title_activity_offers);
@@ -493,5 +493,11 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(getApplicationContext(), "failed... " + error.toString(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public void OpenLinkedinProfile(View view){
+        String linkedinUrl = (String) view.getTag();
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(linkedinUrl));
+        startActivity(browserIntent);
     }
 }

@@ -110,6 +110,14 @@
                     android:text="@string/btn_delete_request" />
             </LinearLayout>
 
+            <TextView
+                android:padding="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/offers"
+                android:textStyle="bold"
+                android:textSize="14dp"
+                android:id="@+id/offers_title"/>
             <android.support.v7.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

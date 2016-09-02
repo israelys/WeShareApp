@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_toLeftOf="@+id/user_pic"
+            android:layout_toRightOf="@+id/user_pic"
             android:id="@+id/user_name_section">
             <TextView
                 android:layout_width="wrap_content"
@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/user_name_section"
-            android:layout_toLeftOf="@+id/user_pic"
+            android:layout_toRightOf="@+id/user_pic"
             android:orientation="horizontal"
             android:id="@+id/email_section">
             <TextView
@@ -53,7 +53,7 @@
         <ImageView
             android:clickable="true"
             android:onClick="OpenLinkedinProfile"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentLeft="true"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:id="@+id/user_pic" />

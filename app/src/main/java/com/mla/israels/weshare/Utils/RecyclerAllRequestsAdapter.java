@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.mla.israels.weshare.DataObjects.Offer;
 import com.mla.israels.weshare.DataObjects.Request;
 import com.mla.israels.weshare.MainActivity;
 import com.mla.israels.weshare.R;
@@ -59,9 +60,24 @@ public class RecyclerAllRequestsAdapter extends RecyclerView.Adapter<RecyclerAll
             holder.btnDeleteRequest.setVisibility(View.VISIBLE);
         }
         else {
-            holder.btnAddOffer.setTag(request.Id);
-            holder.btnAddOffer.setVisibility(View.VISIBLE);
-            holder.btnDeleteRequest.setVisibility(View.GONE);
+            boolean requestHasUserOffer = false;
+            for (Offer offer:request.Offers) {
+                if (offer.UserId == ((MainActivity) context).currentUser.Id) {
+                    requestHasUserOffer = true;
+                    break;
+                }
+            }
+
+            if (requestHasUserOffer){
+                holder.btnAddOffer.setEnabled(false);
+                holder.btnAddOffer.setVisibility(View.VISIBLE);
+                holder.btnDeleteRequest.setVisibility(View.GONE);
+            }else {
+                holder.btnAddOffer.setEnabled(true);
+                holder.btnAddOffer.setTag(request.Id);
+                holder.btnAddOffer.setVisibility(View.VISIBLE);
+                holder.btnDeleteRequest.setVisibility(View.GONE);
+            }
         }
 
         holder.Category.setText(context.getResources().getStringArray(R.array.JobsArray)[request.JobId - 1]);

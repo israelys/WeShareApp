@@ -23,4 +23,7 @@
     <string name="title_activity_offers">ההצעות שלי</string>
     <string name="share">שתף</string>
     <string name="Send">שלח</string>
+    <string name="offers">הצעות:</string>
+    <string name="offering_name">שם המציע:</string>
+    <string name="email">דוא\"ל:</string>
 </resources>
