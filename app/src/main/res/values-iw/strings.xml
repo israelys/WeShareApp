@@ -26,4 +26,14 @@
     <string name="offers">הצעות:</string>
     <string name="offering_name">שם המציע:</string>
     <string name="email">דוא\"ל:</string>
+    <string name="Send_mail_using">שלח דוא\"ל באמצעות...</string>
+    <string name="start_date">תאריך תחילה:</string>
+    <string name="end_date">תאריך סיום:</string>
+    <string name="pickplace">בחר מיקום</string>
+    <string name="address">כתובת...</string>
+    <string name="start_date_picker">תאריך תחילה</string>
+    <string name="end_date_picker">תאריך סיום</string>
+    <string name="finish">סיום</string>
+    <string name="add_details">הוסף פרטים</string>
+    <string name="add_title">הוסף כותרת</string>
 </resources>

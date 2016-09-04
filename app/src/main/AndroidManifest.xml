@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -45,6 +46,8 @@
             android:name=".EditOfferActivity"
             android:theme="@style/AppTheme.Popup"
             android:windowSoftInputMode="stateHidden"/>
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_place_api"/>
     </application>
 
 </manifest>

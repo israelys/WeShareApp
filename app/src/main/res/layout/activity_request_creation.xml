@@ -29,7 +29,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
-                    android:text="Publish"
+                    android:text="@string/finish"
                     android:textSize="16dp"
                     android:layout_marginRight="15dp"
                     />
@@ -55,7 +55,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
-                android:hint="Add Title"
+                android:hint="@string/add_title"
                 android:lines="1" />
 
             <EditText
@@ -65,8 +65,8 @@
                 android:layout_below="@+id/etxtTitle"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
-                android:lines="4"
-                android:hint="Add Details" />
+                android:minLines="4"
+                android:hint="@string/add_details" />
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -74,23 +74,22 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/etxtDetails"
                 android:layout_alignParentStart="true">
-
-                <Spinner
-                    android:layout_width="wrap_content"
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/category_lable"
+                    android:id="@+id/textView" />
+                <Spinner
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
                     android:id="@+id/spinnerJobs"
                     android:layout_below="@+id/etxtDetails"
                     android:layout_centerHorizontal="true"
                     android:spinnerMode="dropdown"
                     android:layout_gravity="center_vertical"
-                    android:layout_weight="1" />
-
-                <TextView
-                    android:layout_width="45dp"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Job"
-                    android:id="@+id/textView" />
+                    android:layout_weight="2" />
             </LinearLayout>
 
             <LinearLayout
@@ -111,7 +110,7 @@
                     android:inputType="date"
                     android:ems="10"
                     android:id="@+id/editStartDate"
-                    android:hint="Start Date"
+                    android:hint="@string/start_date_picker"
                     android:editable="false"
                     android:enabled="false" />
 
@@ -135,20 +134,32 @@
                         android:inputType="date"
                         android:ems="10"
                         android:id="@+id/editEndDate"
-                        android:hint="End Date"
-                    android:enabled="false" />
+                        android:hint="@string/end_date_picker"
+                        android:enabled="false"
+                        android:editable="false" />
 
             </LinearLayout>
 
-            <EditText
-                android:layout_width="fill_parent"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/etxtLocation"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true"
-                android:hint="Add Location"
-                android:lines="1" />
+                android:orientation="horizontal">
+                <EditText
+                    android:enabled="false"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/etxtLocation"
+                    android:hint="@string/address"/>
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/pickplace"
+                    android:onClick="PickPlace"
+                    android:id="@+id/btn_pick_place" />
+            </LinearLayout>
         </LinearLayout>
 
     </android.support.design.widget.CoordinatorLayout>

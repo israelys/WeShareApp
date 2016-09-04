@@ -458,11 +458,11 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void success(Request request, Response response) {
                 Toast.makeText(getApplicationContext(), R.string.request_deleted_successfuly, Toast.LENGTH_SHORT).show();
-                if (viewSelection == R.id.nav_all_requests){
+                if (viewSelection == R.id.nav_all_requests) {
                     arrayListAllRequests.remove(requestToDelete);
                     recyclerAllRequestsAdapter.closeFlexible(pos);
                     recyclerAllRequestsAdapter.refresh();
-                }else if (viewSelection == R.id.nav_my_requests){
+                } else if (viewSelection == R.id.nav_my_requests) {
                     arrayListUserRequests.remove(requestToDelete);
                     recyclerUserRequeatsAdapter.closeFlexible(pos);
                     recyclerUserRequeatsAdapter.refresh();
@@ -499,5 +499,24 @@ public class MainActivity extends AppCompatActivity
         String linkedinUrl = (String) view.getTag();
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(linkedinUrl));
         startActivity(browserIntent);
+    }
+
+    public void OpenMap(View view){
+        Uri gmmIntentUri = Uri.parse("geo:"+ view.getTag(R.id.lat_long) + "?q=" + Uri.encode((String) view.getTag(R.id.location_name)));
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        startActivity(mapIntent);
+    }
+    public void SendEmail(View view){
+       /* Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{((TextView)view).getText().toString()});
+        Intent mailer = Intent.createChooser(intent, null);
+        startActivity(mailer);*/
+
+        Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+        emailIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        emailIntent.setType("vnd.android.cursor.item/email");
+        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[] {((TextView)view).getText().toString()});
+        startActivity(Intent.createChooser(emailIntent,getResources().getString(R.string.Send_mail_using)));
     }
 }

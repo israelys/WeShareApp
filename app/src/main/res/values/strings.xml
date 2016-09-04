@@ -31,6 +31,8 @@
     </string-array>
     <item type="id" name="request" />
     <item type="id" name="position" />
+    <item type="id" name="lat_long" />
+    <item type="id" name="location_name" />
     <string name="title_activity_all_requests">Want Ads</string>
     <string name="title_activity_user_requests">My Want Ads</string>
     <string name="title_activity_offers">My offers</string>
@@ -39,4 +41,15 @@
     <string name="offers">Offers:</string>
     <string name="offering_name">Offering Name:</string>
     <string name="email">E-mail:</string>
+    <string name="google_place_api">AIzaSyAMpmONRQheLnxSKyCFRX-rHRltEMjAN9M</string>
+    <string name="Send_mail_using">Send mail using...</string>
+    <string name="start_date">Start Date:</string>
+    <string name="end_date">End Date:</string>
+    <string name="address">Address...</string>
+    <string name="pickplace">Pick Place</string>
+    <string name="start_date_picker">Start Date</string>
+    <string name="end_date_picker">End Date</string>
+    <string name="finish">Finish</string>
+    <string name="add_title">Add Title</string>
+    <string name="add_details">Add Details</string>
 </resources>

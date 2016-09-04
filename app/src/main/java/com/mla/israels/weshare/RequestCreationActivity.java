@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -15,6 +16,11 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.maps.model.LatLng;
 import com.linkedin.platform.LISessionManager;
 import com.mla.israels.weshare.DataObjects.Request;
 import com.mla.israels.weshare.DataObjects.User;
@@ -32,14 +38,14 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 public class RequestCreationActivity extends AppCompatActivity {
-
+    private static int PLASE_PICKER_REQUEST = 1;
     public static String s_result_code = "new_req";
     ProgressDialog progress;
     Button publish;
     Spinner spnJobs;
     User currentUser;
     private String array_spinner[];
-    EditText startDateTxt;
+    EditText startDateTxt, etLocation;
     EditText endDateTxt;
     Calendar startDate;
     Calendar endDate;
@@ -48,7 +54,7 @@ public class RequestCreationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_request_creation);
-
+        etLocation = (EditText) findViewById(R.id.etxtLocation);
         Bundle b = this.getIntent().getExtras();
         if (b != null)
             currentUser = (User)b.getSerializable("current_user");
@@ -80,7 +86,7 @@ public class RequestCreationActivity extends AppCompatActivity {
                         endDate.get(Calendar.HOUR), endDate.get(Calendar.MINUTE));
                 //req.JobId = spnJobs.getSelectedItemPosition() + 1;
                 req.JobId = Arrays.asList(array_spinner).indexOf(spnJobs.getSelectedItem()) + 1;
-                req.Location = ((EditText)findViewById(R.id.etxtLocation)).getText().toString();
+                req.Location = etLocation.getText().toString()+ ";" + etLocation.getTag();
                 req.UserId = currentUser.Id;
                 RestService.getInstance().getRequestService().addRequest(req, new Callback<Request>() {
                     @Override
@@ -167,5 +173,30 @@ public class RequestCreationActivity extends AppCompatActivity {
                 dpd.show();
             }
         });
+    }
+
+    public void PickPlace(View view){
+        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+
+        Intent i;
+        try {
+            i = builder.build(this);
+            startActivityForResult(i, PLASE_PICKER_REQUEST);
+        } catch (GooglePlayServicesRepairableException e) {
+            e.printStackTrace();
+        } catch (GooglePlayServicesNotAvailableException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PLASE_PICKER_REQUEST){
+            if (resultCode == RESULT_OK){
+                Place place = PlacePicker.getPlace(data, this);
+                LatLng  latLng = place.getLatLng();
+                etLocation.setTag(String.valueOf(latLng.latitude)+","+ String.valueOf(latLng.longitude));
+                etLocation.setText(place.getAddress());
+            }
+        }
     }
 }

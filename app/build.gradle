@@ -5,6 +5,7 @@ android {
     buildToolsVersion "23.0.2"
 
     defaultConfig {
+        multiDexEnabled true
         applicationId "com.mla.israels.weshare"
         minSdkVersion 21
         targetSdkVersion 23
@@ -46,5 +47,7 @@ dependencies {
     compile 'com.squareup.retrofit:retrofit:1.6.1'
     compile 'com.android.support:cardview-v7:23.0.+'
     compile 'com.android.support:recyclerview-v7:23.2.0'
+    compile 'com.google.android.gms:play-services:9.0.0'
+    compile 'com.google.android.gms:play-services-location:9.0.0'
 }
 

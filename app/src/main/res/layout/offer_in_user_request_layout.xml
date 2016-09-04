@@ -42,11 +42,14 @@
                 android:layout_height="wrap_content"
                 android:text="@string/email"/>
             <TextView
+                android:clickable="true"
+                android:onClick="SendEmail"
                 android:paddingLeft="3dp"
                 android:paddingRight="3dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/offer_email"
+                android:textColor="#000080"
                 android:text="E-mail" />
         </LinearLayout>
 
