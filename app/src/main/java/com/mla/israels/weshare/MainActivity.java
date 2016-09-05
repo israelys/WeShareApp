@@ -43,6 +43,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import retrofit.Callback;
@@ -157,15 +159,10 @@ public class MainActivity extends AppCompatActivity
         RestService.getInstance().getRequestService().getRequest(new Callback<List<Request>>() {
             @Override
             public void success(List<Request> requests, Response response) {
+                Collections.sort(requests, Request.CompareByCreationDate());
                 progressBar.setVisibility(View.GONE);
                 arrayListAllRequests.clear();
-
-                Request[] sortRequests = requests.toArray(new Request[requests.size()]);
-                AllRequests = sortRequests;
-                Arrays.sort(sortRequests);
-
-                arrayListAllRequests.addAll(Arrays.asList(sortRequests));
-
+                arrayListAllRequests.addAll(requests);
                 recyclerAllRequestsAdapter.refresh();
                 swipeContainer.setRefreshing(false);
                 Toast.makeText(getApplicationContext(), "Success to get requests from server", Toast.LENGTH_SHORT).show();

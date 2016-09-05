@@ -27,6 +27,8 @@ import com.mla.israels.weshare.DataObjects.User;
 import com.mla.israels.weshare.communication.RestService;
 
 import java.lang.reflect.Array;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -75,14 +77,18 @@ public class RequestCreationActivity extends AppCompatActivity {
                 Request req = new Request();
                 req.Title = ((EditText)findViewById(R.id.etxtTitle)).getText().toString();
                 req.Details = ((EditText)findViewById(R.id.etxtDetails)).getText().toString();
-                req.CreationDate = String.format("%1$04d-%2$02d-%3$02dT%4$02d:%5$02d:00",
+               // DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                Date date = new Date();
+                req.CreationDate = dateFormat.format(date);
+                /*req.CreationDate = String.format("%1$04d-%2$02d-%3$02dT%4$02d:%5$02d:00",
                         now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH),
-                        now.get(Calendar.HOUR), now.get(Calendar.MINUTE));
+                        now.get(Calendar.HOUR), now.get(Calendar.MINUTE));*/
                 req.StartDate = String.format("%1$04d-%2$02d-%3$02dT%4$02d:%5$02d:00",
-                        startDate.get(Calendar.YEAR), startDate.get(Calendar.MONTH), startDate.get(Calendar.DAY_OF_MONTH),
+                        startDate.get(Calendar.YEAR), startDate.get(Calendar.MONTH)+1, startDate.get(Calendar.DAY_OF_MONTH),
                         startDate.get(Calendar.HOUR), startDate.get(Calendar.MINUTE));
                 req.EndDate = String.format("%1$04d-%2$02d-%3$02dT%4$02d:%5$02d:00",
-                        endDate.get(Calendar.YEAR), endDate.get(Calendar.MONTH), endDate.get(Calendar.DAY_OF_MONTH),
+                        endDate.get(Calendar.YEAR), endDate.get(Calendar.MONTH)+1, endDate.get(Calendar.DAY_OF_MONTH),
                         endDate.get(Calendar.HOUR), endDate.get(Calendar.MINUTE));
                 //req.JobId = spnJobs.getSelectedItemPosition() + 1;
                 req.JobId = Arrays.asList(array_spinner).indexOf(spnJobs.getSelectedItem()) + 1;
@@ -140,7 +146,7 @@ public class RequestCreationActivity extends AppCompatActivity {
                                 startDateTxt.setText(dayOfMonth + "-"
                                         + (monthOfYear + 1) + "-" + year);
                                 startDate =  new GregorianCalendar(year, monthOfYear, dayOfMonth);
-                                if (endDate != null)
+                                if (endDate != null && !etLocation.getText().toString().isEmpty())
                                     publish.setEnabled(true);
                             }
                         }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
@@ -166,7 +172,7 @@ public class RequestCreationActivity extends AppCompatActivity {
                                 endDateTxt.setText(dayOfMonth + "-"
                                         + (monthOfYear + 1) + "-" + year);
                                 endDate =  new GregorianCalendar(year, monthOfYear, dayOfMonth);
-                                if (startDate != null)
+                                if (startDate != null && !etLocation.getText().toString().isEmpty())
                                     publish.setEnabled(true);
                             }
                         }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
@@ -194,8 +200,11 @@ public class RequestCreationActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK){
                 Place place = PlacePicker.getPlace(data, this);
                 LatLng  latLng = place.getLatLng();
-                etLocation.setTag(String.valueOf(latLng.latitude)+","+ String.valueOf(latLng.longitude));
+                etLocation.setTag(String.valueOf(latLng.latitude) + "," + String.valueOf(latLng.longitude));
                 etLocation.setText(place.getAddress());
+                if (startDate != null && endDate != null){
+                    publish.setEnabled(true);
+                }
             }
         }
     }

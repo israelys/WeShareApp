@@ -49,7 +49,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/offer_email"
-                android:textColor="#000080"
+                android:textColor="#0000FF"
                 android:text="E-mail" />
         </LinearLayout>
 
