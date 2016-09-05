@@ -1,5 +1,7 @@
 package com.mla.israels.weshare.DataObjects;
 
+import android.location.Location;
+
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Date;
@@ -34,7 +36,22 @@ public class Request implements Serializable {
         return new Comparator<Request>() {
             @Override
             public int compare(Request lhs, Request rhs) {
-                return 0;
+                try{
+                    double latitude = 32.035183;
+                    double longitude = 34.851398;
+                    String lhslatlong[] = lhs.Location.substring(lhs.Location.lastIndexOf(";")+1).split(",", 2);
+                    String rhslatlong[] = rhs.Location.substring(rhs.Location.lastIndexOf(";")+1).split(",", 2);
+
+                    float[] results1 = new float[3];
+                    android.location.Location.distanceBetween(latitude, longitude, Double.valueOf(lhslatlong[0]), Double.valueOf(lhslatlong[1]), results1);
+
+                    float[] results2 = new float[3];
+                    android.location.Location.distanceBetween(latitude, longitude, Double.valueOf(rhslatlong[0]), Double.valueOf(rhslatlong[1]), results2);
+
+                    return ((Float)results1[0]).compareTo((Float)results2[0]);
+                }catch (Exception e){
+                    return 0;
+                }
             }
         };
     }

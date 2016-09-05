@@ -99,16 +99,15 @@ public class RecyclerAllRequestsAdapter extends RecyclerView.Adapter<RecyclerAll
 
 
             try{
-                int separateIndex = request.Location.lastIndexOf(";");
-                String locationName = request.Location.substring(0, separateIndex);
-                String latlong = request.Location.substring(separateIndex +1);
-                String picUrl = "http://maps.googleapis.com/maps/api/staticmap?language=he&center=" + latlong + "&zoom=17&size=600x300&maptype=roadmap&format=png&markers=size:mid%7Ccolor:0x180df2%7Clabel:%7C"+ latlong;
+                String[] strNameLoc = request.Location.split(";");
+                String picUrl = "http://maps.googleapis.com/maps/api/staticmap?language=he&center=" + strNameLoc[1] +
+                        "&zoom=17&size=600x300&maptype=roadmap&format=png&markers=size:mid%7Ccolor:0x180df2%7Clabel:%7C"+ strNameLoc[1];
                 Picasso.with(context).load(picUrl)
                         .into(holder.LocationImg);
 
-                holder.cvMap.setTag(R.id.lat_long, latlong);
-                holder.cvMap.setTag(R.id.location_name, locationName);
-                holder.LocationName.setText(locationName);
+                holder.cvMap.setTag(R.id.lat_long, strNameLoc[1]);
+                holder.cvMap.setTag(R.id.location_name, strNameLoc[0]);
+                holder.LocationName.setText(strNameLoc[0]);
                 holder.cvMap.setVisibility(View.VISIBLE);
             }catch (Exception e) {
                 holder.cvMap.setVisibility(View.GONE);

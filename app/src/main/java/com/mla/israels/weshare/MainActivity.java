@@ -159,6 +159,7 @@ public class MainActivity extends AppCompatActivity
         RestService.getInstance().getRequestService().getRequest(new Callback<List<Request>>() {
             @Override
             public void success(List<Request> requests, Response response) {
+                //Collections.sort(requests, Request.CompareByDistance());
                 Collections.sort(requests, Request.CompareByCreationDate());
                 progressBar.setVisibility(View.GONE);
                 arrayListAllRequests.clear();
@@ -456,13 +457,15 @@ public class MainActivity extends AppCompatActivity
             public void success(Request request, Response response) {
                 Toast.makeText(getApplicationContext(), R.string.request_deleted_successfuly, Toast.LENGTH_SHORT).show();
                 if (viewSelection == R.id.nav_all_requests) {
-                    arrayListAllRequests.remove(requestToDelete);
+                    /*arrayListAllRequests.remove(requestToDelete);
                     recyclerAllRequestsAdapter.closeFlexible(pos);
-                    recyclerAllRequestsAdapter.refresh();
+                    recyclerAllRequestsAdapter.refresh();*/
+                    GetAllRequests();
                 } else if (viewSelection == R.id.nav_my_requests) {
-                    arrayListUserRequests.remove(requestToDelete);
+                    /*arrayListUserRequests.remove(requestToDelete);
                     recyclerUserRequeatsAdapter.closeFlexible(pos);
-                    recyclerUserRequeatsAdapter.refresh();
+                    recyclerUserRequeatsAdapter.refresh();*/
+                    GetUserRequests();
                 }
             }
 
@@ -480,9 +483,10 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void success(Offer offer, Response response) {
                 Toast.makeText(getApplicationContext(), "Success!...", Toast.LENGTH_SHORT).show();
-                arrayListUserOffersRequests.remove(requestToDelete);
+                /*arrayListUserOffersRequests.remove(requestToDelete);
                 recyclerUserOffersAdapter.closeFlexible(pos);
-                recyclerUserOffersAdapter.refresh();
+                recyclerUserOffersAdapter.refresh();*/
+                GetUserOffers();
             }
 
             @Override
