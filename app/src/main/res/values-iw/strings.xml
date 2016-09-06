@@ -36,4 +36,6 @@
     <string name="finish">סיום</string>
     <string name="add_details">הוסף פרטים</string>
     <string name="add_title">הוסף כותרת</string>
+    <string name="newest_first">החדש תחילה</string>
+    <string name="closest_first">הקרוב תחילה</string>
 </resources>

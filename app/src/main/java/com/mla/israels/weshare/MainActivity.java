@@ -1,14 +1,23 @@
 package com.mla.israels.weshare;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -45,6 +54,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import retrofit.Callback;
@@ -54,7 +64,15 @@ import retrofit.client.Response;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    ProgressBar progressBar;
+    // location section
+    public static Location myLocation;
+    Criteria criteria;
+    LocationManager locationManager;
+    LocationListener locationListener;
+    Looper looper;
+
+    Menu user_profile_menu;
+    Comparator<Request> AllrequestCompare;
     public User currentUser;
     private Request[] AllRequests;
     private static final String host = "api.linkedin.com";
@@ -65,7 +83,7 @@ public class MainActivity extends AppCompatActivity
     MainActivity mThis;
     ProgressDialog progress;
     ImageView profile_pic;
-    TextView user_name,user_email;
+    TextView user_name, user_email;
     NavigationView navigation_view;
     FloatingActionButton add_request_btn;
 
@@ -85,24 +103,25 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initLocationParams();
+        AllrequestCompare = Request.CompareByCreationDate();
         mThis = this;
         setContentView(R.layout.activity_main);
         back_dim_layout = (RelativeLayout) findViewById(R.id.bac_dim_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        progress= new ProgressDialog(this);
+        progress = new ProgressDialog(this);
         progress.setMessage("Retrieve data...");
         progress.setCanceledOnTouchOutside(false);
         progress.show();
-        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
 
         getUserData();
 
-        recyclerView = (RecyclerView)findViewById(R.id.recycler_view);
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
         recyclerAllRequestsAdapter = new RecyclerAllRequestsAdapter(this, arrayListAllRequests);
-        recyclerUserRequeatsAdapter = new RecyclerUserRequeatsAdapter(this, arrayListUserRequests) ;
+        recyclerUserRequeatsAdapter = new RecyclerUserRequeatsAdapter(this, arrayListUserRequests);
         recyclerUserOffersAdapter = new RecyclerUserOffersAdapter(this, arrayListUserOffersRequests);
         recyclerView.setAdapter(recyclerAllRequestsAdapter);
         //new ItemTouchHelper(new SwipeHelper(recyclerAllRequestsAdapter)).attachToRecyclerView(recyclerView);
@@ -118,7 +137,7 @@ public class MainActivity extends AppCompatActivity
         setNavigationHeader();
         navigation_view.setNavigationItemSelectedListener(this);
 
-        add_request_btn = (FloatingActionButton)findViewById(R.id.add_request_btn);
+        add_request_btn = (FloatingActionButton) findViewById(R.id.add_request_btn);
         add_request_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -148,20 +167,18 @@ public class MainActivity extends AppCompatActivity
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
-
     }
 
-    private void GetAllRequests(){
-        ShowProgressBar();
+    private void GetAllRequests() {
+        user_profile_menu.findItem(R.id.order).setVisible(true);
+        swipeContainer.setRefreshing(true);
         add_request_btn.setVisibility(View.VISIBLE);
         recyclerView.setAdapter(recyclerAllRequestsAdapter);
         recyclerAllRequestsAdapter.collapseAllRequests();
         RestService.getInstance().getRequestService().getRequest(new Callback<List<Request>>() {
             @Override
             public void success(List<Request> requests, Response response) {
-                //Collections.sort(requests, Request.CompareByDistance());
-                Collections.sort(requests, Request.CompareByCreationDate());
-                progressBar.setVisibility(View.GONE);
+                Collections.sort(requests, AllrequestCompare);
                 arrayListAllRequests.clear();
                 arrayListAllRequests.addAll(requests);
                 recyclerAllRequestsAdapter.refresh();
@@ -177,15 +194,16 @@ public class MainActivity extends AppCompatActivity
         });
         return;
     }
-    private void GetUserRequests(){
-        ShowProgressBar();
+
+    private void GetUserRequests() {
+        user_profile_menu.findItem(R.id.order).setVisible(false);
+        swipeContainer.setRefreshing(true);
         add_request_btn.setVisibility(View.VISIBLE);
         recyclerView.setAdapter(recyclerUserRequeatsAdapter);
         recyclerUserRequeatsAdapter.collapseAllRequests();
         RestService.getInstance().getUserService().getUserRequests(currentUser.Id, new Callback<User>() {
             @Override
             public void success(User user, Response response) {
-                progressBar.setVisibility(View.GONE);
                 arrayListUserRequests.clear();
 
                 for (Request r : user.Requests) {
@@ -207,14 +225,14 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void GetUserOffers() {
-        ShowProgressBar();
+        user_profile_menu.findItem(R.id.order).setVisible(false);
+        swipeContainer.setRefreshing(true);
         add_request_btn.setVisibility(View.GONE);
         recyclerView.setAdapter(recyclerUserOffersAdapter);
         recyclerUserOffersAdapter.collapseAllOffers();
         RestService.getInstance().getUserService().getUserOffers(currentUser.Id, new Callback<User>() {
             @Override
             public void success(User user, Response response) {
-                progressBar.setVisibility(View.GONE);
                 arrayListUserOffersRequests.clear();
 
                 for (Request request : user.Requests) {
@@ -241,27 +259,27 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch(requestCode) {
-            case (s_requestRequestCode) : {
+        switch (requestCode) {
+            case (s_requestRequestCode): {
                 if (resultCode == Activity.RESULT_OK) {
-                    Request newReq = (Request)data.getSerializableExtra(RequestCreationActivity.s_result_code);
+                    Request newReq = (Request) data.getSerializableExtra(RequestCreationActivity.s_result_code);
                     arrayListAllRequests.add(0, newReq);
                     recyclerAllRequestsAdapter.requestAdded();
                     arrayListUserRequests.add(newReq);
-                    if (viewSelection == R.id.nav_all_requests){
+                    if (viewSelection == R.id.nav_all_requests) {
                         recyclerAllRequestsAdapter.refresh();
-                    }else if (viewSelection == R.id.nav_my_requests){
+                    } else if (viewSelection == R.id.nav_my_requests) {
                         recyclerUserRequeatsAdapter.refresh();
                     }
                 }
                 break;
             }
-            case (s_offerRequestCode) : {
+            case (s_offerRequestCode): {
                 if (resultCode == Activity.RESULT_OK) {
-                    Request editedRequest = (Request)data.getSerializableExtra(EditOfferActivity.s_result_code);
-                    for (int index = 0; index < arrayListUserOffersRequests.size(); ++ index){
+                    Request editedRequest = (Request) data.getSerializableExtra(EditOfferActivity.s_result_code);
+                    for (int index = 0; index < arrayListUserOffersRequests.size(); ++index) {
                         Request request = arrayListUserOffersRequests.get(index);
-                        if (request.Id == editedRequest.Id){
+                        if (request.Id == editedRequest.Id) {
                             arrayListUserOffersRequests.set(index, editedRequest);
                             recyclerUserOffersAdapter.refresh();
                             break;
@@ -273,7 +291,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public void StartOffertActivity(View view){
+    public void StartOffertActivity(View view) {
         //back_dim_layout.setVisibility(View.VISIBLE);
         Intent i = new Intent(this, EditOfferActivity.class);
         i.putExtra("REQUEST_ID", Integer.valueOf(view.getTag().toString()));
@@ -281,7 +299,7 @@ public class MainActivity extends AppCompatActivity
         startActivity(i);
     }
 
-    public void UpdateOffer(View view){
+    public void UpdateOffer(View view) {
         //back_dim_layout.setVisibility(View.VISIBLE);
         Intent i = new Intent(this, EditOfferActivity.class);
         i.putExtra("REQUEST", (Request) view.getTag());
@@ -292,7 +310,7 @@ public class MainActivity extends AppCompatActivity
       If successful, A LinkedIn ApiResponse object containing all of the relevant aspects of the server's response will be returned.
      */
 
-    public void getUserData(){
+    public void getUserData() {
         APIHelper apiHelper = APIHelper.getInstance(getApplicationContext());
         apiHelper.getRequest(MainActivity.this, topCardUrl, new ApiListener() {
             @Override
@@ -302,7 +320,7 @@ public class MainActivity extends AppCompatActivity
                     setUserProfile(result.getResponseDataAsJson());
                     progress.dismiss();
 
-                } catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -318,7 +336,7 @@ public class MainActivity extends AppCompatActivity
        Set Navigation header by using Layout Inflater.
      */
 
-    public void setNavigationHeader(){
+    public void setNavigationHeader() {
 
         navigation_view = (NavigationView) findViewById(R.id.nav_view);
 
@@ -330,7 +348,7 @@ public class MainActivity extends AppCompatActivity
         user_email = (TextView) header.findViewById(R.id.email);
     }
 
-    public void saveUserProfile(JSONObject response){
+    public void saveUserProfile(JSONObject response) {
 
         try {
             User user = new User();
@@ -354,7 +372,7 @@ public class MainActivity extends AppCompatActivity
                     Toast.makeText(getApplicationContext(), "Unable to save user. " + error.toString(), Toast.LENGTH_SHORT).show();
                 }
             });
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -362,13 +380,13 @@ public class MainActivity extends AppCompatActivity
     /*
        Set User Profile Information in Navigation Bar.
      */
-    public void setUserProfile(JSONObject response){
+    public void setUserProfile(JSONObject response) {
         try {
             user_email.setText(response.get("emailAddress").toString());
             user_name.setText(response.get("formattedName").toString());
             Picasso.with(this).load(response.getString("pictureUrl"))
                     .into(profile_pic);
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -387,11 +405,8 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.user_profile, menu);
+        user_profile_menu = menu;
         return true;
-    }
-
-    private void ShowProgressBar(){
-        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -408,6 +423,14 @@ public class MainActivity extends AppCompatActivity
             LISessionManager.getInstance(getApplicationContext()).clearSession();
             finish();
             return true;
+        } else if (id == R.id.sort_by_creation_date){
+            AllrequestCompare = Request.CompareByCreationDate();
+            GetAllRequests();
+            item.setChecked(true);
+        } else if (id == R.id.sort_by_distance){
+            AllrequestCompare = Request.CompareByDistance();
+            refreshLocation();
+            item.setChecked(true);
         }
 
         return super.onOptionsItemSelected(item);
@@ -450,7 +473,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void DeleteRequest(View view) {
-        final Request requestToDelete = (Request)view.getTag(R.id.request);
+        final Request requestToDelete = (Request) view.getTag(R.id.request);
         final int pos = (int) view.getTag(R.id.position);
         RestService.getInstance().getRequestService().deleteRequestById(requestToDelete.Id, new Callback<Request>() {
             @Override
@@ -477,7 +500,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void DeleteOffer(View view) {
-        final Request requestToDelete = (Request)view.getTag(R.id.request);
+        final Request requestToDelete = (Request) view.getTag(R.id.request);
         final int pos = (int) view.getTag(R.id.position);
         RestService.getInstance().getOfferService().deleteOfferById(requestToDelete.Offers[0].Id, new Callback<Offer>() {
             @Override
@@ -496,18 +519,19 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    public void OpenLinkedinProfile(View view){
+    public void OpenLinkedinProfile(View view) {
         String linkedinUrl = (String) view.getTag();
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(linkedinUrl));
         startActivity(browserIntent);
     }
 
-    public void OpenMap(View view){
-        Uri gmmIntentUri = Uri.parse("geo:"+ view.getTag(R.id.lat_long) + "?q=" + Uri.encode((String) view.getTag(R.id.location_name)));
+    public void OpenMap(View view) {
+        Uri gmmIntentUri = Uri.parse("geo:" + view.getTag(R.id.lat_long) + "?q=" + Uri.encode((String) view.getTag(R.id.location_name)));
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
         startActivity(mapIntent);
     }
-    public void SendEmail(View view){
+
+    public void SendEmail(View view) {
        /* Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_EMAIL, new String[]{((TextView)view).getText().toString()});
@@ -517,7 +541,68 @@ public class MainActivity extends AppCompatActivity
         Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
         emailIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         emailIntent.setType("vnd.android.cursor.item/email");
-        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[] {((TextView)view).getText().toString()});
-        startActivity(Intent.createChooser(emailIntent,getResources().getString(R.string.Send_mail_using)));
+        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{((TextView) view).getText().toString()});
+        startActivity(Intent.createChooser(emailIntent, getResources().getString(R.string.Send_mail_using)));
+    }
+
+    public void refreshLocation() {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        locationManager.requestSingleUpdate(criteria, locationListener, looper);
+
+
+    }
+
+    private void initLocationParams(){
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                myLocation = location;
+                AllrequestCompare = Request.CompareByDistance();
+                GetAllRequests();
+                Log.d("Location Changes", location.toString());
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+                Log.d("Status Changed", String.valueOf(status));
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+                Log.d("Provider Enabled", provider);
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+                Log.d("Provider Disabled", provider);
+            }
+        };
+        // Now first make a criteria with your requirements
+        // this is done to save the battery life of the device
+        // there are various other other criteria you can search for..
+        criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+        criteria.setPowerRequirement(Criteria.POWER_LOW);
+        criteria.setAltitudeRequired(false);
+        criteria.setBearingRequired(false);
+        criteria.setSpeedRequired(false);
+        criteria.setCostAllowed(true);
+        criteria.setHorizontalAccuracy(Criteria.ACCURACY_HIGH);
+        criteria.setVerticalAccuracy(Criteria.ACCURACY_HIGH);
+
+        // Now create a location manager
+        locationManager = (LocationManager)getSystemService(getApplicationContext().LOCATION_SERVICE);
+
+        // This is the Best And IMPORTANT part
+        looper = null;
     }
 }

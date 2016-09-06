@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/order"
+        android:orderInCategory="1"
+        app:showAsAction="always"
+        android:icon="@drawable/sort"
+        android:title="Order By">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item android:id="@+id/sort_by_creation_date" android:title="@string/newest_first" android:checked="true"/>
+                <item android:id="@+id/sort_by_distance" android:title="@string/closest_first"/>
+            </group>
+        </menu>
+    </item>
     <item
         android:id="@+id/action_logout"
         android:orderInCategory="200"

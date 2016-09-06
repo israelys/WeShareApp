@@ -52,4 +52,6 @@
     <string name="finish">Finish</string>
     <string name="add_title">Add Title</string>
     <string name="add_details">Add Details</string>
+    <string name="newest_first">Newest First</string>
+    <string name="closest_first">Closest First</string>
 </resources>

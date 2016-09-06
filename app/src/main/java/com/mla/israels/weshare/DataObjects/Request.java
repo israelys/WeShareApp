@@ -2,6 +2,8 @@ package com.mla.israels.weshare.DataObjects;
 
 import android.location.Location;
 
+import com.mla.israels.weshare.MainActivity;
+
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Date;
@@ -37,8 +39,8 @@ public class Request implements Serializable {
             @Override
             public int compare(Request lhs, Request rhs) {
                 try{
-                    double latitude = 32.035183;
-                    double longitude = 34.851398;
+                    double latitude = MainActivity.myLocation.getLatitude();
+                    double longitude = MainActivity.myLocation.getLongitude();
                     String lhslatlong[] = lhs.Location.substring(lhs.Location.lastIndexOf(";")+1).split(",", 2);
                     String rhslatlong[] = rhs.Location.substring(rhs.Location.lastIndexOf(";")+1).split(",", 2);
 
