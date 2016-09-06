@@ -3,6 +3,7 @@ package com.mla.israels.weshare.Utils;
 import android.content.Context;
 import android.graphics.Point;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.mla.israels.weshare.DataObjects.Request;
 import com.mla.israels.weshare.R;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,7 +54,14 @@ public class RecyclerUserOffersAdapter extends RecyclerView.Adapter<RecyclerUser
         holder.btnDeleteOffer.setTag(R.id.position, holder.getPosition());
         holder.btnUpdateOffer.setTag(request);
         holder.Category.setText(context.getResources().getStringArray(R.array.JobsArray)[request.JobId - 1]);
-        holder.Comment.setText(request.Offers[0].Comment);
+
+        byte[] data = Base64.decode(request.Offers[0].Comment, Base64.DEFAULT);
+        try {
+            holder.Comment.setText(new String(data, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            holder.Comment.setText(request.Offers[0].Comment);
+            e.printStackTrace();
+        }
 
         if (exPos.contains(position)){
             holder.FullDetails.setVisibility(View.VISIBLE);

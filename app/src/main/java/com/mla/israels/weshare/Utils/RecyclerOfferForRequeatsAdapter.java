@@ -2,6 +2,7 @@ package com.mla.israels.weshare.Utils;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import com.mla.israels.weshare.DataObjects.User;
 import com.mla.israels.weshare.R;
 import com.squareup.picasso.Picasso;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 /**
@@ -42,7 +44,15 @@ public class RecyclerOfferForRequeatsAdapter extends RecyclerView.Adapter<Recycl
         holder.OfferName.setText(offer.User.Name);
         //holder.OfferName.setTag(offer.User);
         holder.UserEmail.setText(offer.User.Email);
-        holder.Comment.setText(offer.Comment);
+
+        byte[] data = Base64.decode(offer.Comment, Base64.DEFAULT);
+        try {
+            holder.Comment.setText(new String(data, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            holder.Comment.setText(offer.Comment);
+            e.printStackTrace();
+        }
+
         Picasso.with(context).load(offer.User.PictureUrl)
                 .into(holder.pic);
         holder.pic.setTag(offer.User.LinkdinUserProfileUrl);

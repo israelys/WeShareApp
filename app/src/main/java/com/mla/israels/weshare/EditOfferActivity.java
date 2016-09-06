@@ -3,6 +3,7 @@ package com.mla.israels.weshare;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +16,7 @@ import com.mla.israels.weshare.DataObjects.Request;
 import com.mla.israels.weshare.communication.OfferService;
 import com.mla.israels.weshare.communication.RestService;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import retrofit.Callback;
@@ -50,7 +52,12 @@ public class EditOfferActivity extends Activity implements View.OnClickListener 
         requestId = getIntent().getIntExtra("REQUEST_ID", -1);
         if (requestId == -1){
             request = (Request) getIntent().getSerializableExtra("REQUEST");
-            etComment.setText(request.Offers[0].Comment);
+            byte[] data = Base64.decode(request.Offers[0].Comment, Base64.DEFAULT);
+            try {
+                etComment.setText(new String(data, "UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                etComment.setText(request.Offers[0].Comment);
+            }
         }
     }
 
@@ -58,7 +65,13 @@ public class EditOfferActivity extends Activity implements View.OnClickListener 
     public void onClick(View v) {
         if (requestId != -1) {
             Offer offer = new Offer();
-            offer.Comment = etComment.getText().toString();
+            byte[] data = new byte[0];
+            try {
+                data = etComment.getText().toString().getBytes("UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            offer.Comment = Base64.encodeToString(data, Base64.DEFAULT);
             offer.RequestId = getIntent().getIntExtra("REQUEST_ID", -1);
             offer.UserId = getIntent().getIntExtra("USER_ID", -1);
             RestService.getInstance().getOfferService().addOffer(offer, new Callback<Offer>() {
@@ -75,7 +88,13 @@ public class EditOfferActivity extends Activity implements View.OnClickListener 
             finish();
         }
         else {
-            request.Offers[0].Comment = etComment.getText().toString();
+            byte[] data = new byte[0];
+            try {
+                data = etComment.getText().toString().getBytes("UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            request.Offers[0].Comment =  Base64.encodeToString(data, Base64.DEFAULT);
             RestService.getInstance().getOfferService().updateOfferById(request.Offers[0].Id, request.Offers[0], new Callback<Offer>() {
                 @Override
                 public void success(Offer offer, Response response) {
