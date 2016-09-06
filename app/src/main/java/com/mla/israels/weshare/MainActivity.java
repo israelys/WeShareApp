@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         progress = new ProgressDialog(this);
-        progress.setMessage("Retrieve data...");
+        progress.setMessage(getResources().getString(R.string.retrieve_data));
         progress.setCanceledOnTouchOutside(false);
         progress.show();
 
