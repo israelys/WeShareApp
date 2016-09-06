@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity
                 arrayListAllRequests.addAll(requests);
                 recyclerAllRequestsAdapter.refresh();
                 swipeContainer.setRefreshing(false);
-                Toast.makeText(getApplicationContext(), "Success to get requests from server", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "Success to get requests from server", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -212,7 +212,7 @@ public class MainActivity extends AppCompatActivity
 
                 recyclerUserRequeatsAdapter.refresh();
                 swipeContainer.setRefreshing(false);
-                Toast.makeText(getApplicationContext(), "Success to get requests from server", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "Success to get requests from server", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -241,7 +241,7 @@ public class MainActivity extends AppCompatActivity
 
                 recyclerUserOffersAdapter.refresh();
                 swipeContainer.setRefreshing(false);
-                Toast.makeText(getApplicationContext(), "Success to get requests from server", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "Success to get requests from server", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -363,7 +363,7 @@ public class MainActivity extends AppCompatActivity
                 public void success(User user, Response response) {
                     currentUser = user;
                     GetAllRequests();
-                    Toast.makeText(getApplicationContext(), "User saved", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), "User saved", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
@@ -505,7 +505,7 @@ public class MainActivity extends AppCompatActivity
         RestService.getInstance().getOfferService().deleteOfferById(requestToDelete.Offers[0].Id, new Callback<Offer>() {
             @Override
             public void success(Offer offer, Response response) {
-                Toast.makeText(getApplicationContext(), "Success!...", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "Success!...", Toast.LENGTH_SHORT).show();
                 /*arrayListUserOffersRequests.remove(requestToDelete);
                 recyclerUserOffersAdapter.closeFlexible(pos);
                 recyclerUserOffersAdapter.refresh();*/

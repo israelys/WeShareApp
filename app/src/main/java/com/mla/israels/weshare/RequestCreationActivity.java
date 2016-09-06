@@ -98,7 +98,7 @@ public class RequestCreationActivity extends AppCompatActivity {
                     @Override
                     public void success(Request request, Response response) {
                         progress.dismiss();
-                        Toast.makeText(getApplicationContext(), "Request published", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(), "Request published", Toast.LENGTH_SHORT).show();
 
                         Intent resultIntent = new Intent();
                         resultIntent.putExtra(s_result_code, request);
