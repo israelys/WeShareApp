@@ -358,6 +358,7 @@ public class MainActivity extends AppCompatActivity
             user.LinkdinUserProfileUrl = response.get("publicProfileUrl").toString();
             user.PictureUrl = response.get("pictureUrl").toString();
 
+            swipeContainer.setRefreshing(true);
             RestService.getInstance().getUserService().addUser(user, new Callback<User>() {
                 @Override
                 public void success(User user, Response response) {
@@ -429,6 +430,7 @@ public class MainActivity extends AppCompatActivity
             item.setChecked(true);
         } else if (id == R.id.sort_by_distance){
             AllrequestCompare = Request.CompareByDistance();
+            swipeContainer.setRefreshing(true);
             refreshLocation();
             item.setChecked(true);
         }
